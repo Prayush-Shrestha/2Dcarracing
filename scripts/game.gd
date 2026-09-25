@@ -8,6 +8,38 @@ const SCORE_PER_LEVEL := 600.0
 const LEVEL_COIN_BONUS := 25
 const LEVEL_SCORE_BONUS := 100.0
 
+# Track themes. Same list lives in themes.gd for the picker screen.
+const THEMES: Array[Dictionary] = [
+	{
+		"name": "HIGHWAY", "desc": "Classic daylight highway.",
+		"handling_mod": 1.0,
+		"side": Color(0.14, 0.32, 0.18), "side_dark": Color(0.12, 0.28, 0.16),
+		"road": Color(0.17, 0.18, 0.20), "edge": Color(0.88, 0.88, 0.86),
+		"dash": Color(0.9, 0.9, 0.88, 0.95),
+	},
+	{
+		"name": "DESERT", "desc": "Hot sand, red-line road.",
+		"handling_mod": 1.0,
+		"side": Color(0.82, 0.71, 0.51), "side_dark": Color(0.74, 0.62, 0.44),
+		"road": Color(0.33, 0.32, 0.31), "edge": Color(0.88, 0.27, 0.13),
+		"dash": Color(0.96, 0.92, 0.80, 0.95),
+	},
+	{
+		"name": "ICE", "desc": "Frozen track. Slippery!",
+		"handling_mod": 0.7,
+		"side": Color(0.74, 0.84, 0.91), "side_dark": Color(0.64, 0.75, 0.84),
+		"road": Color(0.30, 0.36, 0.44), "edge": Color(0.92, 0.96, 1.0),
+		"dash": Color(0.95, 0.98, 1.0, 0.95),
+	},
+	{
+		"name": "NIGHT", "desc": "Night drive. Amber lines.",
+		"handling_mod": 1.0,
+		"side": Color(0.05, 0.07, 0.10), "side_dark": Color(0.04, 0.05, 0.08),
+		"road": Color(0.10, 0.11, 0.13), "edge": Color(0.95, 0.70, 0.20),
+		"dash": Color(0.95, 0.85, 0.55, 0.95),
+	},
+]
+
 @export var enemy_scene: PackedScene
 @export var coin_scene: PackedScene
 
@@ -54,6 +86,7 @@ func _ready() -> void:
 	_load_save()
 	_apply_mute()
 	_apply_selected_car()
+	_apply_selected_theme()
 
 	road.road_speed = road_speed
 	enemy_timer.wait_time = 0.95
@@ -379,6 +412,16 @@ func _apply_selected_car() -> void:
 	if cfg.load(SAVE_PATH) == OK:
 		selected = int(cfg.get_value("save", "selected", 0))
 	player.apply_car_stats(_car_for_index(selected))
+
+
+func _apply_selected_theme() -> void:
+	var cfg := ConfigFile.new()
+	var theme_idx := 0
+	if cfg.load(SAVE_PATH) == OK:
+		theme_idx = clampi(int(cfg.get_value("save", "theme", 0)), 0, THEMES.size() - 1)
+	var theme: Dictionary = THEMES[theme_idx]
+	road.apply_theme(theme)
+	player.handling *= float(theme.get("handling_mod", 1.0))
 
 
 func _car_for_index(i: int) -> Dictionary:

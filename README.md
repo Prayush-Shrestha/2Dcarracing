@@ -24,6 +24,15 @@ Esc pauses anywhere in a run.
 - SPORT (500 coins): Speed 80, Accel 75, Handling 70
 - SUPER (1500 coins): Speed 95, Accel 90, Handling 60
 
+## Tracks
+
+Pick a theme on the TRACKS screen (saved between runs):
+
+- HIGHWAY: classic daylight highway
+- DESERT: sand sides, red edge lines
+- ICE: frozen track, car steers heavier (slippery!)
+- NIGHT: dark road with amber lines
+
 Coins persist across runs. High score, coin total, unlocked cars and
 the selected car save to `user://street_rush_save.cfg`.
 
@@ -37,7 +46,7 @@ automatically when present.
 ## Structure
 
 - `scenes/` - MainMenu, Game, Road, PlayerCar, EnemyCar, Coin,
-  PauseMenu, GameOver, Victory, Garage (one scene per screen/entity)
+  PauseMenu, GameOver, Victory, Garage, Themes (one scene per screen/entity)
 - `scripts/` - one script per scene with matching responsibility
   (Game owns score/level/spawning, Player owns movement/health, etc.)
 - `assets/` - optional art/sound drop-in folders

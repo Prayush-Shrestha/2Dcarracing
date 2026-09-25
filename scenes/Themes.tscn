@@ -1,0 +1,271 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/themes.gd" id="1_themes"]
+
+[node name="Themes" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_themes")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.07, 0.09, 1)
+
+[node name="Top" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+theme_override_constants/separation = 12
+alignment = 0
+
+[node name="BackButton" type="Button" parent="Top"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "< BACK"
+
+[node name="Title" type="Label" parent="Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 32
+text = "TRACKS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Top"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+
+[node name="Cards" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 90.0
+offset_right = -40.0
+offset_bottom = -30.0
+theme_override_constants/separation = 12
+
+[node name="Card0" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card0"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card0/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="HBoxContainer" parent="Cards/Card0/Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Side" type="ColorRect" parent="Cards/Card0/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.14, 0.32, 0.18, 1)
+
+[node name="Road" type="ColorRect" parent="Cards/Card0/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.17, 0.18, 0.2, 1)
+
+[node name="Side2" type="ColorRect" parent="Cards/Card0/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.14, 0.32, 0.18, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card0/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "HIGHWAY"
+
+[node name="DescLabel" type="Label" parent="Cards/Card0/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card0/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "SELECT"
+
+[node name="Card1" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card1"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card1/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="HBoxContainer" parent="Cards/Card1/Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Side" type="ColorRect" parent="Cards/Card1/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.82, 0.71, 0.51, 1)
+
+[node name="Road" type="ColorRect" parent="Cards/Card1/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.33, 0.32, 0.31, 1)
+
+[node name="Side2" type="ColorRect" parent="Cards/Card1/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.82, 0.71, 0.51, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card1/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "DESERT"
+
+[node name="DescLabel" type="Label" parent="Cards/Card1/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card1/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "SELECT"
+
+[node name="Card2" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card2"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card2/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="HBoxContainer" parent="Cards/Card2/Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Side" type="ColorRect" parent="Cards/Card2/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.74, 0.84, 0.91, 1)
+
+[node name="Road" type="ColorRect" parent="Cards/Card2/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.3, 0.36, 0.44, 1)
+
+[node name="Side2" type="ColorRect" parent="Cards/Card2/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.74, 0.84, 0.91, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card2/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "ICE"
+
+[node name="DescLabel" type="Label" parent="Cards/Card2/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card2/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "SELECT"
+
+[node name="Card3" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card3"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card3/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="HBoxContainer" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Side" type="ColorRect" parent="Cards/Card3/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.05, 0.07, 0.1, 1)
+
+[node name="Road" type="ColorRect" parent="Cards/Card3/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.1, 0.11, 0.13, 1)
+
+[node name="Side2" type="ColorRect" parent="Cards/Card3/Margin/Rows/Preview"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.05, 0.07, 0.1, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "NIGHT"
+
+[node name="DescLabel" type="Label" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "SELECT"
+
+[node name="ClickPlayer" type="AudioStreamPlayer" parent="."]

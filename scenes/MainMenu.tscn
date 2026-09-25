@@ -81,6 +81,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "GARAGE"
 
+[node name="TracksButton" type="Button" parent="Center/Menu"]
+custom_minimum_size = Vector2(250, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "TRACKS"
+
 [node name="SettingsButton" type="Button" parent="Center/Menu"]
 custom_minimum_size = Vector2(250, 48)
 layout_mode = 2

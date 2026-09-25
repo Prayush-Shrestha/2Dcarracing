@@ -5,6 +5,7 @@ const SAVE_PATH := "user://street_rush_save.cfg"
 
 @onready var play_button: Button = $Center/Menu/PlayButton
 @onready var garage_button: Button = $Center/Menu/GarageButton
+@onready var tracks_button: Button = $Center/Menu/TracksButton
 @onready var settings_button: Button = $Center/Menu/SettingsButton
 @onready var quit_button: Button = $Center/Menu/QuitButton
 @onready var best_label: Label = $Center/Menu/BestLabel
@@ -19,6 +20,7 @@ const SAVE_PATH := "user://street_rush_save.cfg"
 func _ready() -> void:
 	play_button.pressed.connect(_on_play)
 	garage_button.pressed.connect(_on_garage)
+	tracks_button.pressed.connect(_on_tracks)
 	settings_button.pressed.connect(_on_settings)
 	quit_button.pressed.connect(_on_quit)
 	mute_check.toggled.connect(_on_mute)
@@ -55,6 +57,11 @@ func _on_garage() -> void:
 	get_tree().change_scene_to_file("res://scenes/Garage.tscn")
 
 
+func _on_tracks() -> void:
+	_click()
+	get_tree().change_scene_to_file("res://scenes/Themes.tscn")
+
+
 func _on_settings() -> void:
 	_click()
 	settings_panel.show()
@@ -84,6 +91,7 @@ func _on_reset() -> void:
 	cfg.set_value("save", "high_score", 0)
 	cfg.set_value("save", "total_coins", 0)
 	cfg.set_value("save", "best_level", 1)
+	cfg.set_value("save", "theme", 0)
 	cfg.set_value("save", "unlocked", [0])
 	cfg.set_value("save", "selected", 0)
 	cfg.set_value("save", "last_score", 0)
