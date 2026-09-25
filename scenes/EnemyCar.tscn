@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy_car.gd" id="1_ecar"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ecol"]
+size = Vector2(36, 68)
+
+[node name="EnemyCar" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_ecar")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ecol")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="WheelFL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-21, -22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelFR" type="Polygon2D" parent="Visuals"]
+position = Vector2(21, -22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelBL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-21, 22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelBR" type="Polygon2D" parent="Visuals"]
+position = Vector2(21, 22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="Body" type="Polygon2D" parent="Visuals"]
+color = Color(0.95, 0.62, 0.25, 1)
+polygon = PackedVector2Array(-18, -35, 18, -35, 20, -18, 18, 35, -18, 35, -20, -18)
+
+[node name="Cabin" type="Polygon2D" parent="Visuals"]
+position = Vector2(0, 2)
+color = Color(0.13, 0.15, 0.2, 1)
+polygon = PackedVector2Array(-12, -12, 12, -12, 10, 12, -10, 12)
+
+[node name="RearWindow" type="Polygon2D" parent="Visuals"]
+position = Vector2(0, 10)
+color = Color(0.6, 0.74, 0.84, 1)
+polygon = PackedVector2Array(-8, -4, 8, -4, 7, 4, -7, 4)
+
+[node name="HeadL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-12, -33)
+color = Color(1, 0.95, 0.62, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)
+
+[node name="HeadR" type="Polygon2D" parent="Visuals"]
+position = Vector2(12, -33)
+color = Color(1, 0.95, 0.62, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)

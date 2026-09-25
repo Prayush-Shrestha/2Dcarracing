@@ -1,0 +1,17 @@
+# Godot 4
+.godot/
+export_presets.cfg
+
+# exports
+export/
+*.apk
+*.exe
+*.pck
+*.zip
+
+# os junk
+.DS_Store
+Thumbs.db
+
+# save files (local only, dont commit)
+# user:// is outside the project anyway so nothing to ignore here really

@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/player_car.gd" id="1_pcar"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pcol"]
+size = Vector2(36, 68)
+
+[node name="PlayerCar" type="Area2D"]
+collision_layer = 2
+collision_mask = 12
+script = ExtResource("1_pcar")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_pcol")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="WheelFL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-21, -22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelFR" type="Polygon2D" parent="Visuals"]
+position = Vector2(21, -22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelBL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-21, 22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="WheelBR" type="Polygon2D" parent="Visuals"]
+position = Vector2(21, 22)
+color = Color(0.07, 0.07, 0.08, 1)
+polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
+
+[node name="Body" type="Polygon2D" parent="Visuals"]
+color = Color(0.18, 0.55, 1, 1)
+polygon = PackedVector2Array(-18, -35, 18, -35, 20, -18, 18, 35, -18, 35, -20, -18)
+
+[node name="Stripe" type="Polygon2D" parent="Visuals"]
+color = Color(0.94, 0.94, 0.95, 1)
+polygon = PackedVector2Array(-3, -34, 3, -34, 3, 34, -3, 34)
+
+[node name="Cabin" type="Polygon2D" parent="Visuals"]
+position = Vector2(0, -4)
+color = Color(0.13, 0.16, 0.22, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 10, 10, -10, 10)
+
+[node name="Windshield" type="Polygon2D" parent="Visuals"]
+position = Vector2(0, -14)
+color = Color(0.62, 0.79, 0.88, 1)
+polygon = PackedVector2Array(-10, -5, 10, -5, 8, 4, -8, 4)
+
+[node name="HeadL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-12, -33)
+color = Color(1, 0.95, 0.62, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)
+
+[node name="HeadR" type="Polygon2D" parent="Visuals"]
+position = Vector2(12, -33)
+color = Color(1, 0.95, 0.62, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)
+
+[node name="TailL" type="Polygon2D" parent="Visuals"]
+position = Vector2(-13, 34)
+color = Color(0.4, 0.06, 0.08, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)
+
+[node name="TailR" type="Polygon2D" parent="Visuals"]
+position = Vector2(13, 34)
+color = Color(0.4, 0.06, 0.08, 1)
+polygon = PackedVector2Array(-5, -2, 5, -2, 5, 2, -5, 2)

@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/game_over.gd" id="1_over"]
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_over")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.06, 0.07, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.35, 0.3, 1)
+theme_override_font_sizes/font_size = 52
+text = "GAME OVER"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "FINAL SCORE: 0"
+horizontal_alignment = 1
+
+[node name="CoinsLabel" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
+theme_override_font_sizes/font_size = 20
+text = "COINS: 0"
+horizontal_alignment = 1
+
+[node name="HighLabel" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.83, 0.87, 1)
+theme_override_font_sizes/font_size = 20
+text = "HIGH SCORE: 0"
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+text = "REACHED LEVEL 1/10"
+horizontal_alignment = 1
+
+[node name="NewBestLabel" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 20
+text = "NEW BEST!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="Center/Box"]
+custom_minimum_size = Vector2(250, 54)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "RESTART"
+
+[node name="MenuButton" type="Button" parent="Center/Box"]
+custom_minimum_size = Vector2(250, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "MAIN MENU"
+
+[node name="OverPlayer" type="AudioStreamPlayer" parent="."]

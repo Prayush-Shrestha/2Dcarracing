@@ -1,0 +1,157 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/Road.tscn" id="2_road"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerCar.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyCar.tscn" id="4_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/Coin.tscn" id="5_coin"]
+[ext_resource type="PackedScene" path="res://scenes/PauseMenu.tscn" id="6_pause"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+enemy_scene = ExtResource("4_enemy")
+coin_scene = ExtResource("5_coin")
+
+[node name="Road" parent="." instance=ExtResource("2_road")]
+
+[node name="EnemyHolder" type="Node2D" parent="."]
+
+[node name="CoinHolder" type="Node2D" parent="."]
+
+[node name="Effects" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(270, 800)
+
+[node name="EnemyTimer" type="Timer" parent="."]
+wait_time = 0.95
+
+[node name="CoinTimer" type="Timer" parent="."]
+wait_time = 1.4
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="TopBar" type="ColorRect" parent="HUD"]
+anchor_right = 1.0
+offset_bottom = 84.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Margin" type="MarginContainer" parent="HUD/TopBar"]
+anchor_right = 1.0
+offset_bottom = 84.0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 76
+theme_override_constants/margin_bottom = 8
+
+[node name="Rows" type="VBoxContainer" parent="HUD/TopBar/Margin"]
+theme_override_constants/separation = 2
+
+[node name="ScoreRow" type="HBoxContainer" parent="HUD/TopBar/Margin/Rows"]
+theme_override_constants/separation = 12
+
+[node name="ScoreLabel" type="Label" parent="HUD/TopBar/Margin/Rows/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "SCORE: 0"
+
+[node name="LevelLabel" type="Label" parent="HUD/TopBar/Margin/Rows/ScoreRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 20
+text = "LEVEL 1"
+
+[node name="CoinRow" type="HBoxContainer" parent="HUD/TopBar/Margin/Rows"]
+theme_override_constants/separation = 12
+
+[node name="CoinLabel" type="Label" parent="HUD/TopBar/Margin/Rows/CoinRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
+theme_override_font_sizes/font_size = 17
+text = "COINS: 0"
+
+[node name="HealthLabel" type="Label" parent="HUD/TopBar/Margin/Rows/CoinRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
+theme_override_font_sizes/font_size = 17
+text = "HEALTH:"
+horizontal_alignment = 2
+
+[node name="LevelBar" type="ProgressBar" parent="HUD/TopBar/Margin/Rows"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+max_value = 600.0
+show_percentage = false
+
+[node name="LevelPanel" type="PanelContainer" parent="HUD"]
+process_mode = 2
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -110.0
+offset_right = 180.0
+offset_bottom = 110.0
+
+[node name="Margin" type="MarginContainer" parent="HUD/LevelPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="Box" type="VBoxContainer" parent="HUD/LevelPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="CompleteLabel" type="Label" parent="HUD/LevelPanel/Margin/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 26
+text = "LEVEL 1 COMPLETE!"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="HUD/LevelPanel/Margin/Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.87, 0.9, 1)
+theme_override_font_sizes/font_size = 17
+text = "Bonus: +25 coins"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="HUD/LevelPanel/Margin/Box"]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "NEXT LEVEL >"
+
+[node name="PauseButton" type="Button" parent="HUD"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -56.0
+offset_top = 16.0
+offset_right = -12.0
+offset_bottom = 56.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "II"
+
+[node name="HitFlash" type="ColorRect" parent="HUD"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+modulate = Color(1, 1, 1, 0)
+color = Color(0.9, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_pause")]
+
+[node name="EnginePlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -14.0
+
+[node name="SfxPlayer" type="AudioStreamPlayer" parent="."]
