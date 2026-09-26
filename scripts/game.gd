@@ -58,6 +58,10 @@ var _shake: float = 0.0
 var _flash: float = 0.0
 var _transitioning: bool = false
 
+const HELP_AUTO_HIDE := 8.0
+var _help_visible: bool = true
+var _help_elapsed: float = 0.0
+
 @onready var road = $Road
 @onready var player = $Player
 @onready var enemy_holder: Node2D = $EnemyHolder
@@ -74,6 +78,9 @@ var _transitioning: bool = false
 @onready var hit_flash: ColorRect = $HUD/HitFlash
 @onready var level_bar: ProgressBar = $HUD/TopBar/Margin/Rows/LevelBar
 @onready var level_panel: PanelContainer = $HUD/LevelPanel
+@onready var help_panel: PanelContainer = $HUD/HelpPanel
+@onready var help_button: Button = $HUD/HelpButton
+@onready var help_close_button: Button = $HUD/HelpPanel/Margin/Box/CloseButton
 @onready var level_title: Label = $HUD/LevelPanel/Margin/Box/CompleteLabel
 @onready var level_bonus: Label = $HUD/LevelPanel/Margin/Box/BonusLabel
 @onready var continue_button: Button = $HUD/LevelPanel/Margin/Box/ContinueButton
@@ -107,6 +114,12 @@ func _ready() -> void:
 	continue_button.pressed.connect(_on_level_continue)
 	level_panel.hide()
 
+	help_button.pressed.connect(_toggle_help)
+	help_close_button.pressed.connect(_on_help_close)
+	help_panel.show()
+	_help_visible = true
+	_help_elapsed = 0.0
+
 	_start_engine()
 	_update_hud()
 
@@ -132,6 +145,11 @@ func _process(delta: float) -> void:
 	var want_interval := maxf(0.95 - float(level - 1) * 0.08 - _elapsed * 0.0015, 0.30)
 	if absf(enemy_timer.wait_time - want_interval) > 0.04:
 		enemy_timer.wait_time = want_interval
+
+	if _help_visible:
+		_help_elapsed += delta
+		if _help_elapsed >= HELP_AUTO_HIDE:
+			_hide_help()
 
 	_update_engine_pitch()
 	_update_hud()
@@ -311,6 +329,28 @@ func _toggle_pause() -> void:
 		pause_menu.hide_pause()
 		engine_player.stream_paused = false
 	_play_click()
+
+
+func _toggle_help() -> void:
+	if _help_visible:
+		_hide_help()
+		_play_click()
+	else:
+		_help_visible = true
+		_help_elapsed = HELP_AUTO_HIDE  # keep open until closed manually
+		help_panel.show()
+		_play_click()
+
+
+func _on_help_close() -> void:
+	_hide_help()
+	_play_click()
+
+
+func _hide_help() -> void:
+	_help_visible = false
+	_help_elapsed = HELP_AUTO_HIDE
+	help_panel.hide()
 
 
 func _restart() -> void:
