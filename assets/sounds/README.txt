@@ -7,7 +7,11 @@ Supported files (all optional):
   level.wav    - level up
   engine.wav   - looping engine hum
   gameover.wav - game over sting
+  victory.wav  - championship win
+  nitro.wav    - nitro boost start
+  powerup.wav  - shield / magnet pickup
 
 If a file is missing the game generates a small placeholder tone in code,
 so the project always runs with zero audio assets.
 Keep clips short and normalized to avoid clicks.
+Generate the base set with:  python _makesfx.py

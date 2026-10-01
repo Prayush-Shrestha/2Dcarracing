@@ -12,6 +12,22 @@ export/
 # os junk
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# save files (local only, dont commit)
-# user:// is outside the project anyway so nothing to ignore here really
+# editor / cache / logs
+*.tmp
+*.log
+*~
+.vscode/
+.idea/
+
+# python dev tools
+__pycache__/
+*.pyc
+.pytest_cache/
+tools/python/levels.json
+
+# local screenshots pending capture (keep folder, ignore temp files)
+screenshots/*.tmp
+
+# save files are in user:// (outside the project) - nothing to ignore here

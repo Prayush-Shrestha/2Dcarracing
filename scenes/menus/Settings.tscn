@@ -1,0 +1,153 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings.gd" id="1_settings"]
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.07, 0.09, 1)
+
+[node name="Top" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="Top"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "< BACK"
+
+[node name="Title" type="Label" parent="Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 32
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Top"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 80.0
+offset_right = -40.0
+offset_bottom = -20.0
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="MusicTitle" type="Label" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MUSIC VOLUME"
+
+[node name="MusicRow" type="HBoxContainer" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MusicSlider" type="HSlider" parent="Scroll/Rows/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 80.0
+
+[node name="MusicValue" type="Label" parent="Scroll/Rows/MusicRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="SfxTitle" type="Label" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "SOUND EFFECTS VOLUME"
+
+[node name="SfxRow" type="HBoxContainer" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SfxSlider" type="HSlider" parent="Scroll/Rows/SfxRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 90.0
+
+[node name="SfxValue" type="Label" parent="Scroll/Rows/SfxRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "90%"
+
+[node name="MuteCheck" type="CheckButton" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Mute all audio"
+
+[node name="ControlsTitle" type="Label" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.81, 0.2, 1)
+theme_override_font_sizes/font_size = 20
+text = "CONTROLS"
+
+[node name="Controls" type="Label" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.82, 1)
+theme_override_font_sizes/font_size = 16
+text = "A / D or Left / Right Arrow — steer
+SPACE — nitro boost
+ESC — pause / resume"
+autowrap_mode = 2
+
+[node name="ResetButton" type="Button" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "RESET PROGRESS"
+
+[node name="ConfirmBox" type="VBoxContainer" parent="Scroll/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ConfirmLabel" type="Label" parent="Scroll/Rows/ConfirmBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
+theme_override_font_sizes/font_size = 16
+text = "Erase coins, cars, upgrades and levels? This cannot be undone."
+autowrap_mode = 2
+
+[node name="ConfirmRow" type="HBoxContainer" parent="Scroll/Rows/ConfirmBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="YesButton" type="Button" parent="Scroll/Rows/ConfirmBox/ConfirmRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "YES, ERASE"
+
+[node name="NoButton" type="Button" parent="Scroll/Rows/ConfirmBox/ConfirmRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CANCEL"
+
+[node name="ClickPlayer" type="AudioStreamPlayer" parent="."]

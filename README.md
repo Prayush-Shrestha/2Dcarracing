@@ -1,52 +1,141 @@
 # Street Rush
 
-2D top-down endless car racer for Godot 4.x (Windows desktop first).
+2D top-down racing game for **Godot 4.x**. Dodge traffic, collect coins,
+burn nitro, grab shield/magnet pickups and clear **10 levels** to win the
+championship. Clean indie UI, garage with upgrades, 5 track themes,
+persistent saves and synthesized audio that works with zero assets.
 
-Dodge traffic, collect coins, level up. 3 hits per run. Esc pauses.
+## Features
 
-## Run
+- 2D top-down racing with smooth keyboard steering
+- 10-level progression (distance-based, gradual difficulty)
+- Level unlock system with Level Select (completed / unlocked / locked)
+- Garage: STARTER / SPORT / SUPER + per-stat upgrades
+- 5 track themes: HIGHWAY, DESERT, ICE, NIGHT, RAIN (+ MIXED / CHAMPIONSHIP)
+- Traffic system: normal, truck, bus, police, sports cars (fair spawning)
+- Coins with per-level multiplier + persistent totals
+- Nitro boost (SPACE) with meter, flames and engine pitch
+- Power-ups: SHIELD (blocks one crash), COIN MAGNET (8s pull)
+- 3-hit health with crash FX, shake, flash and invulnerability
+- Save system (`user://street_rush_save.cfg`): coins, scores, levels,
+  cars, upgrades, track, settings
+- Audio: engine loop, coin/crash/level/nitro/power-up/UI/game-over/
+  victory (optional `.wav` + synthesized fallback)
+- Settings: music/SFX volumes, mute, controls reference, confirmed reset
+- Pause overlay (RESUME / RESTART / SETTINGS / LEVELS / MENU), ESC to pause
+- Responsive UI (540×960, 1280×720, 1920×1080 via `canvas_items/expand`)
 
-1. Open this folder in Godot 4.2+ (tested on 4.2 / 4.3, GL Compatibility).
-2. Press F5 (MainMenu is the main scene).
-3. PLAY -> drive with A/D or Left/Right arrows.
+## Technology Stack
 
-## Flow
+- **Godot 4.x** (GL Compatibility) — game engine
+- **GDScript** — main game programming (all gameplay, UI, saves, audio)
+- **Python** (stdlib only, 3.10+) — development tools only:
+  level generation, data analysis, asset validation, save checking.
+  The game runs from Godot with no Python required.
 
-Main Menu -> Garage -> select car -> Play -> dodge traffic ->
-collect coins -> score -> complete level 1..10 (bonus each) ->
-beat level 10 -> Victory -> Play Again / Main Menu.
-Lose all health any time -> Game Over -> Restart / Main Menu.
-Esc pauses anywhere in a run.
+## Controls
 
-## Cars
+```
+A / D  or  Left / Right Arrow  — steer
+SPACE                          — nitro boost
+ESC                            — pause / resume
+```
 
-- STARTER (free): Speed 60, Accel 60, Handling 80
-- SPORT (500 coins): Speed 80, Accel 75, Handling 70
-- SUPER (1500 coins): Speed 95, Accel 90, Handling 60
+Also on screen: `II` pause button, `?` help panel.
 
-## Tracks
+## Game Flow
 
-Pick a theme on the TRACKS screen (saved between runs):
+```
+Main Menu → PLAY (continue) / LEVELS (pick) / GARAGE / TRACKS / SETTINGS
+  → Select Level → Race (reach target distance)
+  → Complete Level (+reward, unlock next) → Next Level …
+  → Level 10 → Victory (PLAY AGAIN / LEVELS / MENU)
+  Lose all health anytime → Game Over (RESTART / LEVELS / MENU)
+```
 
-- HIGHWAY: classic daylight highway
-- DESERT: sand sides, red edge lines
-- ICE: frozen track, car steers heavier (slippery!)
-- NIGHT: dark road with amber lines
+## Screenshots
 
-Coins persist across runs. High score, coin total, unlocked cars and
-the selected car save to `user://street_rush_save.cfg`.
+Capture these from Godot and drop them in `screenshots/`:
 
-## Audio
+```
+screenshots/main-menu.png
+screenshots/garage.png
+screenshots/level-select.png
+screenshots/gameplay.png
+screenshots/pause-menu.png
+screenshots/game-over.png
+screenshots/victory.png
+```
 
-No audio files are required. The game synthesizes click / coin / crash /
-level / engine / game-over sounds in code. To use real clips, drop .wav
-files into `assets/sounds/` (see the README there) - they are picked up
-automatically when present.
+No fake screenshots are bundled — the folder currently holds only
+`.gitkeep`. The list above is the capture checklist.
 
-## Structure
+## Gameplay Demo
 
-- `scenes/` - MainMenu, Game, Road, PlayerCar, EnemyCar, Coin,
-  PauseMenu, GameOver, Victory, Garage, Themes (one scene per screen/entity)
-- `scripts/` - one script per scene with matching responsibility
-  (Game owns score/level/spawning, Player owns movement/health, etc.)
-- `assets/` - optional art/sound drop-in folders
+No video is bundled. To record one: run the game (see below), play
+levels 1–3, and capture with OBS / Windows Game Bar. Save as
+`screenshots/demo.mp4` (git-ignored pattern — keep videos out of the
+repo or link them from a release).
+
+## Project Structure
+
+```
+Street-Rush/
+├── assets/cars, road, sounds, ui   # optional drop-in art/audio (code-drawn by default)
+├── scenes/
+│   ├── main/MainMenu.tscn
+│   ├── gameplay/Game.tscn, Road.tscn, LevelSelect.tscn
+│   ├── vehicles/PlayerCar.tscn, EnemyCar.tscn, Coin.tscn, PowerUp.tscn
+│   ├── garage/Garage.tscn
+│   └── menus/PauseMenu.tscn, Settings.tscn, GameOver.tscn, Victory.tscn, Themes.tscn
+├── scripts/
+│   ├── core/game.gd, game_manager.gd, level_manager.gd, save_manager.gd, audio_manager.gd
+│   ├── player/player_car.gd, nitro_system.gd
+│   ├── enemies/enemy_car.gd, enemy_spawner.gd
+│   ├── world/road.gd, coin.gd, powerups.gd, powerup_pickup.gd
+│   ├── garage/garage.gd, car_upgrade.gd
+│   └── ui/main_menu.gd, level_select.gd, themes.gd, settings.gd,
+│           pause_menu.gd, game_over.gd, victory.gd
+├── tools/python/                   # dev-only (never needed by the game)
+│   ├── level_generator.py, game_data_analyzer.py,
+│   │   asset_validator.py, save_data_checker.py, README.md
+├── docs/architecture.md, gameplay.md, save-system.md
+├── screenshots/  README.md  LICENSE  project.godot  icon.svg
+└── _makesfx.py  index.html (legacy web prototype, not used by Godot)
+```
+
+## How to Run
+
+1. Install **Godot 4.2+** (tested 4.3 / 4.7, GL Compatibility).
+2. Open this folder in Godot (`project.godot` is the project file).
+3. Press **F5** — `MainMenu` is the main scene.
+4. `PLAY` continues at your unlocked level, `LEVELS` picks any unlocked
+   level, `GARAGE` spends coins, `TRACKS` sets the free theme.
+
+Optional audio: run `python _makesfx.py` to synthesize the base `.wav`
+set into `assets/sounds/` (the game also works without them).
+
+## Development Tools
+
+Python is **not** required to run the game — only for these helpers:
+
+```bash
+python tools/python/level_generator.py --format json --out tools/python/levels.json
+python tools/python/game_data_analyzer.py
+python tools/python/game_data_analyzer.py --save /tmp/street_rush_save.cfg
+python tools/python/asset_validator.py
+python tools/python/save_data_checker.py --save /tmp/street_rush_save.cfg
+```
+
+Details: `tools/python/README.md`.
+
+## Credits
+
+- Design, code, UI and synthesized audio: Street Rush contributors.
+- Built with Godot 4.x + GDScript; Python helpers use stdlib only.
+- No third-party art/music bundled. See `LICENSE` and
+  `assets/*/README.txt` before adding external files.
+
+## License
+
+MIT — see `LICENSE`.
