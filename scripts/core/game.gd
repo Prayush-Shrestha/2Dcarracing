@@ -127,7 +127,7 @@ func _process(delta: float) -> void:
 		return
 	_elapsed += delta
 	var base := 400.0 + float(level - 1) * 35.0 + _elapsed * 2.0
-	var nitro_mult := 1.45 if player.nitro_active else 1.0
+	var nitro_mult: float = 1.45 if player.nitro_active else 1.0
 	road_speed = minf(base * nitro_mult, MAX_ROAD_SPEED)
 	road.road_speed = road_speed
 	score += road_speed * delta * SCORE_RATE
@@ -529,7 +529,7 @@ func _apply_level_theme() -> void:
 	var theme_idx := int(level_def.get("theme_index", 0))
 	# MIXED / CHAMPIONSHIP fall back to highway visuals with full difficulty.
 	road.apply_theme_index(theme_idx)
-	var theme := road.theme_for_index(theme_idx)
+	var theme: Dictionary = road.theme_for_index(theme_idx)
 	player.handling *= float(theme.get("handling_mod", 1.0))
 
 
@@ -551,12 +551,12 @@ func _start_engine() -> void:
 
 func _update_engine_pitch() -> void:
 	if engine_player.playing:
-		var boost := 1.15 if player.nitro_active else 1.0
+		var boost: float = 1.15 if player.nitro_active else 1.0
 		engine_player.pitch_scale = (0.85 + road_speed / 1400.0) * boost
 
 
 func _update_nitro_audio() -> void:
-	var is_active := player.nitro_active
+	var is_active: bool = player.nitro_active
 	if is_active and not _nitro_was_active:
 		AudioManager.play(nitro_player, "nitro", bool(_save.get("muted", false)))
 		nitro_player.pitch_scale = 1.0

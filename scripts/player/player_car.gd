@@ -47,6 +47,7 @@ func _ready() -> void:
 	health = max_health
 	position.y = fixed_y
 	area_entered.connect(_on_area_entered)
+	_ensure_distinct_look()
 	_apply_saved_color()
 
 
@@ -65,6 +66,7 @@ func _process(delta: float) -> void:
 	_update_nitro(delta)
 	_update_invuln(delta)
 	_update_magnet(delta)
+	_update_marker_bob(delta)
 
 
 func _read_steer() -> float:
@@ -181,6 +183,53 @@ func _refresh_shield_ring() -> void:
 	_shield_ring.color = Color(0.35, 0.75, 1.0, 0.35)
 	visuals.add_child(_shield_ring)
 	visuals.move_child(_shield_ring, 0)
+
+
+# --- player distinct look: yellow outline + rear spoiler + floating YOU arrow.
+# Enemies have none of these, so the player car is identifiable at a glance
+# even when body colors are close. Code-built so existing scenes get it too.
+var _marker: Node2D = null
+var _marker_t: float = 0.0
+
+func _ensure_distinct_look() -> void:
+	if visuals == null:
+		return
+	if not has_node("Visuals/PlayerOutline"):
+		var outline := Polygon2D.new()
+		outline.name = "PlayerOutline"
+		outline.color = Color(1.0, 0.82, 0.15, 1.0)
+		outline.polygon = PackedVector2Array([
+			Vector2(-20, -37), Vector2(20, -37), Vector2(22, -18),
+			Vector2(20, 37), Vector2(-20, 37), Vector2(-22, -18)])
+		visuals.add_child(outline)
+		visuals.move_child(outline, 0)
+	if not has_node("Visuals/Spoiler"):
+		var spoiler := Polygon2D.new()
+		spoiler.name = "Spoiler"
+		spoiler.color = Color(0.10, 0.12, 0.16, 1.0)
+		spoiler.polygon = PackedVector2Array([
+			Vector2(-21, 27), Vector2(21, 27),
+			Vector2(21, 34), Vector2(-21, 34)])
+		visuals.add_child(spoiler)
+	if not has_node("PlayerMarker"):
+		_marker = Node2D.new()
+		_marker.name = "PlayerMarker"
+		var chev := Polygon2D.new()
+		chev.name = "Chevron"
+		chev.color = Color(1.0, 0.82, 0.15, 1.0)
+		chev.polygon = PackedVector2Array([
+			Vector2(-10, -58), Vector2(10, -58), Vector2(0, -48)])
+		_marker.add_child(chev)
+		add_child(_marker)
+	else:
+		_marker = $PlayerMarker
+
+
+func _update_marker_bob(delta: float) -> void:
+	if _marker == null:
+		return
+	_marker_t += delta * 3.0
+	_marker.position.y = sin(_marker_t) * 4.0
 
 
 func _update_invuln(delta: float) -> void:

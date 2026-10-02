@@ -35,9 +35,17 @@ position = Vector2(21, 22)
 color = Color(0.07, 0.07, 0.08, 1)
 polygon = PackedVector2Array(-5, -9, 5, -9, 5, 9, -5, 9)
 
+[node name="PlayerOutline" type="Polygon2D" parent="Visuals"]
+color = Color(1, 0.82, 0.15, 1)
+polygon = PackedVector2Array(-20, -37, 20, -37, 22, -18, 20, 37, -20, 37, -22, -18)
+
 [node name="Body" type="Polygon2D" parent="Visuals"]
 color = Color(0.18, 0.55, 1, 1)
 polygon = PackedVector2Array(-18, -35, 18, -35, 20, -18, 18, 35, -18, 35, -20, -18)
+
+[node name="Spoiler" type="Polygon2D" parent="Visuals"]
+color = Color(0.1, 0.12, 0.16, 1)
+polygon = PackedVector2Array(-21, 27, 21, 27, 21, 34, -21, 34)
 
 [node name="Stripe" type="Polygon2D" parent="Visuals"]
 color = Color(0.94, 0.94, 0.95, 1)

@@ -13,11 +13,14 @@ var _wobble_amp: float = 0.0
 @onready var collision: CollisionShape2D = $CollisionShape2D
 
 const TYPE_COLORS := {
-	"normal": [Color(0.95, 0.62, 0.25), Color(0.25, 0.65, 0.85)],
-	"truck": [Color(0.55, 0.58, 0.62), Color(0.45, 0.48, 0.52)],
-	"bus": [Color(0.95, 0.75, 0.25), Color(0.90, 0.60, 0.20)],
+	# NOTE: traffic colors deliberately avoid the 3 bright player colors:
+	# STARTER blue (0.18,0.55,1.0), SPORT red (0.85,0.2,0.22),
+	# SUPER yellow (0.95,0.75,0.2) — so the player car always stands out.
+	"normal": [Color(0.95, 0.62, 0.25), Color(0.42, 0.58, 0.58)],
+	"truck": [Color(0.55, 0.58, 0.62), Color(0.55, 0.48, 0.38)],
+	"bus": [Color(0.62, 0.58, 0.32), Color(0.58, 0.44, 0.30)],
 	"police": [Color(0.20, 0.35, 0.95), Color(0.15, 0.25, 0.75)],
-	"sports": [Color(0.90, 0.20, 0.30), Color(0.70, 0.15, 0.55)],
+	"sports": [Color(0.55, 0.35, 0.78), Color(0.58, 0.28, 0.48)],
 }
 
 
