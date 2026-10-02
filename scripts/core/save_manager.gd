@@ -125,5 +125,11 @@ static func _to_int_array(raw: Variant) -> Array:
 	var out: Array = []
 	if raw is Array:
 		for v in (raw as Array):
-			out.append(int(v))
+			# Guard against corrupt save entries like ["abc"].
+			if v is int:
+				out.append(v)
+			elif v is float:
+				out.append(int(v))
+			elif v is String and (v as String).is_valid_int():
+				out.append((v as String).to_int())
 	return out

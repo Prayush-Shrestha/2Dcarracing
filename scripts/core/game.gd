@@ -80,14 +80,11 @@ func _ready() -> void:
 	road.road_speed = road_speed
 	enemy_timer.wait_time = float(level_def.get("spawn_interval", 0.9))
 	coin_timer.wait_time = 1.4
+	enemy_timer.timeout.connect(_on_enemy_tick)
+	coin_timer.timeout.connect(_on_coin_tick)
 	if powerup_timer != null:
 		powerup_timer.wait_time = PowerUpDef.SPAWN_INTERVAL
-		enemy_timer.timeout.connect(_on_enemy_tick)
-		coin_timer.timeout.connect(_on_coin_tick)
 		powerup_timer.timeout.connect(_on_powerup_tick)
-	else:
-		enemy_timer.timeout.connect(_on_enemy_tick)
-		coin_timer.timeout.connect(_on_coin_tick)
 	enemy_timer.start()
 	coin_timer.start()
 	if powerup_timer != null:
@@ -130,7 +127,7 @@ func _process(delta: float) -> void:
 		return
 	_elapsed += delta
 	var base := 400.0 + float(level - 1) * 35.0 + _elapsed * 2.0
-	var nitro_mult := 1.45 if player.get("nitro_active") else 1.0
+	var nitro_mult := 1.45 if player.nitro_active else 1.0
 	road_speed = minf(base * nitro_mult, MAX_ROAD_SPEED)
 	road.road_speed = road_speed
 	score += road_speed * delta * SCORE_RATE
@@ -195,8 +192,6 @@ func _on_enemy_tick() -> void:
 		spd = clampf(spd, 190.0, 660.0)
 		if e.has_method("setup"):
 			e.setup(spd, float(lx), randf_range(-110.0, -50.0), etype)
-		else:
-			e.setup(spd, float(lx), randf_range(-110.0, -50.0))
 
 
 func _on_coin_tick() -> void:
@@ -259,7 +254,7 @@ func _on_powerup_picked(kind: String, at: Vector2) -> void:
 
 
 func _update_magnet_pull(delta: float) -> void:
-	if not bool(player.get("magnet_active")):
+	if player == null or not player.magnet_active:
 		return
 	for c in coin_holder.get_children():
 		if not c.is_in_group("coin"):
@@ -452,14 +447,14 @@ func _update_hud() -> void:
 		_distance_label.text = "%s  •  %dm / %dm" % [lname, int(distance_m), int(target_distance)]
 	if _nitro_bar != null:
 		_nitro_bar.max_value = 100.0
-		_nitro_bar.value = float(player.get("_nitro")) if player.get("_nitro") != null else 100.0
+		_nitro_bar.value = player.nitro_fraction() * 100.0
 	if _status_label != null:
 		var parts: Array[String] = []
-		if bool(player.get("shield_active")):
+		if player.shield_active:
 			parts.append("SHIELD")
-		if bool(player.get("magnet_active")):
+		if player.magnet_active:
 			parts.append("MAGNET")
-		if bool(player.get("nitro_active")):
+		if player.nitro_active:
 			parts.append("NITRO!")
 		_status_label.text = "  ".join(parts)
 		_status_label.visible = not parts.is_empty()
@@ -494,7 +489,7 @@ func _spawn_crash(at: Vector2) -> void:
 		tw.tween_property(p, "rotation", randf_range(-2.0, 2.0), 0.5)
 		tw.tween_property(p, "modulate:a", 0.0, 0.5)
 		tw.chain().tween_callback(p.queue_free)
-	if bool(player.get("nitro_active")):
+	if player != null and player.nitro_active:
 		pass
 
 
@@ -556,12 +551,12 @@ func _start_engine() -> void:
 
 func _update_engine_pitch() -> void:
 	if engine_player.playing:
-		var boost := 1.15 if bool(player.get("nitro_active")) else 1.0
+		var boost := 1.15 if player.nitro_active else 1.0
 		engine_player.pitch_scale = (0.85 + road_speed / 1400.0) * boost
 
 
 func _update_nitro_audio() -> void:
-	var is_active := bool(player.get("nitro_active"))
+	var is_active := player.nitro_active
 	if is_active and not _nitro_was_active:
 		AudioManager.play(nitro_player, "nitro", bool(_save.get("muted", false)))
 		nitro_player.pitch_scale = 1.0

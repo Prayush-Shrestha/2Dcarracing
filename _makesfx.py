@@ -2,6 +2,9 @@
 
 Sounds land in assets/sounds/ where game.gd picks them up automatically:
   click.wav, coin.wav, crash.wav, level.wav, engine.wav, gameover.wav
+
+Usage:
+    py _makesfx.py
 """
 import math
 import wave
@@ -11,10 +14,10 @@ from pathlib import Path
 
 RATE = 22050
 OUT = Path(__file__).resolve().parent / "assets" / "sounds"
-random.seed(7)
 
 
 def save(name: str, samples: list[float]) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
     peak = max(1e-6, max(abs(s) for s in samples))
     gain = 0.89 / peak
     frames = struct.pack(
@@ -55,54 +58,62 @@ def mix(*tracks: list[float]) -> list[float]:
     return [math.tanh(s) for s in out]
 
 
-# UI click: short filtered tick
-click = tone(1250.0, 0.07, harm=(1.0, 0.35), decay=9.0)
-save("click.wav", click)
+def main() -> None:
+    random.seed(7)
+    OUT.mkdir(parents=True, exist_ok=True)
 
-# Coin: classic B5 -> E6 two-tone chime
-coin = mix(
-    tone(987.77, 0.10, harm=(1.0, 0.4, 0.15), decay=4.0),
-    tone(1318.5, 0.28, harm=(1.0, 0.4, 0.15), decay=5.0, delay=0.09, total=0.37),
-)
-save("coin.wav", coin)
+    # UI click: short filtered tick
+    click = tone(1250.0, 0.07, harm=(1.0, 0.35), decay=9.0)
+    save("click.wav", click)
 
-# Crash: noise burst + low thud
-dur = 0.5
-n = int(RATE * dur)
-noise = []
-for i in range(n):
-    env = math.exp(-7.0 * i / n)
-    noise.append(random.uniform(-1, 1) * env * 0.8)
-thud = tone(62.0, dur, harm=(1.0, 0.5), decay=5.0)
-save("crash.wav", mix(noise, thud))
+    # Coin: classic B5 -> E6 two-tone chime
+    coin = mix(
+        tone(987.77, 0.10, harm=(1.0, 0.4, 0.15), decay=4.0),
+        tone(1318.5, 0.28, harm=(1.0, 0.4, 0.15), decay=5.0, delay=0.09, total=0.37),
+    )
+    save("coin.wav", coin)
 
-# Level up: quick C-E-G-C arpeggio
-arp = [523.25, 659.25, 783.99, 1046.5]
-level = mix(*[
-    tone(f, 0.12, harm=(1.0, 0.3), decay=4.5, delay=k * 0.09, total=0.48)
-    for k, f in enumerate(arp)
-])
-save("level.wav", level)
+    # Crash: noise burst + low thud
+    dur = 0.5
+    n = int(RATE * dur)
+    noise = []
+    for i in range(n):
+        env = math.exp(-7.0 * i / n)
+        noise.append(random.uniform(-1, 1) * env * 0.8)
+    thud = tone(62.0, dur, harm=(1.0, 0.5), decay=5.0)
+    save("crash.wav", mix(noise, thud))
 
-# Engine: 1s seamless loop, 70Hz saw-ish + harmonics (integer cycles = no click)
-n = RATE  # exactly 1 second
-eng = []
-for i in range(n):
-    t = i / RATE
-    s = (math.sin(math.tau * 70 * t) * 0.55
-         + math.sin(math.tau * 140 * t) * 0.28
-         + math.sin(math.tau * 210 * t) * 0.14
-         + math.sin(math.tau * 35 * t + 0.6) * 0.22)
-    s *= 0.85 + 0.15 * math.sin(math.tau * 9 * t)  # gentle putter, 9 exact cycles
-    eng.append(s * 0.7)
-save("engine.wav", eng)
+    # Level up: quick C-E-G-C arpeggio
+    arp = [523.25, 659.25, 783.99, 1046.5]
+    level = mix(*[
+        tone(f, 0.12, harm=(1.0, 0.3), decay=4.5, delay=k * 0.09, total=0.48)
+        for k, f in enumerate(arp)
+    ])
+    save("level.wav", level)
 
-# Game over: descending A-F-D-A lament
-down = [440.0, 349.23, 293.66, 220.0]
-over = mix(*[
-    tone(f, 0.22, harm=(1.0, 0.35, 0.12), decay=3.0, delay=k * 0.17, total=0.9)
-    for k, f in enumerate(down)
-])
-save("gameover.wav", over)
+    # Engine: 1s seamless loop, 70Hz saw-ish + harmonics (integer cycles = no click)
+    n = RATE  # exactly 1 second
+    eng = []
+    for i in range(n):
+        t = i / RATE
+        s = (math.sin(math.tau * 70 * t) * 0.55
+             + math.sin(math.tau * 140 * t) * 0.28
+             + math.sin(math.tau * 210 * t) * 0.14
+             + math.sin(math.tau * 35 * t + 0.6) * 0.22)
+        s *= 0.85 + 0.15 * math.sin(math.tau * 9 * t)  # gentle putter, 9 exact cycles
+        eng.append(s * 0.7)
+    save("engine.wav", eng)
 
-print("done ->", OUT)
+    # Game over: descending A-F-D-A lament
+    down = [440.0, 349.23, 293.66, 220.0]
+    over = mix(*[
+        tone(f, 0.22, harm=(1.0, 0.35, 0.12), decay=3.0, delay=k * 0.17, total=0.9)
+        for k, f in enumerate(down)
+    ])
+    save("gameover.wav", over)
+
+    print("done ->", OUT)
+
+
+if __name__ == "__main__":
+    main()

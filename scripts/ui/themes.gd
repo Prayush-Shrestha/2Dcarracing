@@ -85,7 +85,6 @@ func _preview_colors(idx: int) -> Dictionary:
 			return {"side": Color(0.05, 0.07, 0.10), "road": Color(0.10, 0.11, 0.13)}
 		_:
 			return {"side": Color(0.16, 0.22, 0.18), "road": Color(0.19, 0.22, 0.26)}
-	return {"side": Color(0.14, 0.32, 0.18), "road": Color(0.17, 0.18, 0.20)}
 
 
 func _refresh() -> void:

@@ -43,7 +43,12 @@ func _refresh_visuals() -> void:
 	if outer != null:
 		outer.color = PowerUpDef.color_for(kind)
 	if glyph != null:
-		glyph.text = "S" if kind == PowerUpDef.KIND_SHIELD else "M"
+		if kind == PowerUpDef.KIND_SHIELD:
+			glyph.text = "S"
+		elif kind == PowerUpDef.KIND_MAGNET:
+			glyph.text = "M"
+		else:
+			glyph.text = "?"
 
 
 func _on_area_entered(area: Area2D) -> void:

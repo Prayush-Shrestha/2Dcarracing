@@ -27,7 +27,13 @@ static func apply_volumes(music_volume: float, sfx_volume: float, muted: bool) -
 	AudioServer.set_bus_mute(0, false)
 	var music_db := linear_to_db(clampf(music_volume, 0.001, 1.0))
 	var sfx_db := linear_to_db(clampf(sfx_volume, 0.001, 1.0))
-	# Bus 0 is Master; keep it simple and drive both from saved prefs.
+	var music_idx := AudioServer.get_bus_index("Music")
+	var sfx_idx := AudioServer.get_bus_index("SFX")
+	if music_idx >= 0 and sfx_idx >= 0:
+		AudioServer.set_bus_volume_db(music_idx, music_db)
+		AudioServer.set_bus_volume_db(sfx_idx, sfx_db)
+		return
+	# Single Master bus project: drive it from the quieter of the two prefs.
 	AudioServer.set_bus_volume_db(0, minf(music_db, sfx_db))
 
 
@@ -86,10 +92,10 @@ static func make_tone(freq: float, dur: float, volume: float = 0.5, slide_to: fl
 	return stream
 
 
-static func make_engine_loop() -> AudioStreamWAV:
+static func make_engine_loop() -> AudioStream:
 	var f := file_stream("engine")
 	if f is AudioStreamWAV:
-		var wav := f as AudioStreamWAV
+		var wav := (f as AudioStreamWAV).duplicate() as AudioStreamWAV
 		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
 		wav.loop_begin = 0
 		var bytes_per_frame := 2 if wav.stereo else 1
@@ -98,7 +104,7 @@ static func make_engine_loop() -> AudioStreamWAV:
 		wav.loop_end = int(wav.data.size() / bytes_per_frame)
 		return wav
 	if f != null:
-		return null
+		return f
 	var rate := 22050
 	var frames := int(rate * 0.5)
 	var data := PackedByteArray()

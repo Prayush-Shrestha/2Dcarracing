@@ -12,15 +12,6 @@ var _wobble_amp: float = 0.0
 @onready var body: Polygon2D = $Visuals/Body
 @onready var collision: CollisionShape2D = $CollisionShape2D
 
-const COLORS: Array[Color] = [
-	Color(0.95, 0.62, 0.25),
-	Color(0.25, 0.65, 0.85),
-	Color(0.5, 0.75, 0.4),
-	Color(0.6, 0.6, 0.65),
-	Color(0.88, 0.48, 0.38),
-	Color(0.7, 0.55, 0.9),
-]
-
 const TYPE_COLORS := {
 	"normal": [Color(0.95, 0.62, 0.25), Color(0.25, 0.65, 0.85)],
 	"truck": [Color(0.55, 0.58, 0.62), Color(0.45, 0.48, 0.52)],
@@ -93,7 +84,7 @@ func _apply_type_visuals() -> void:
 		var bar := Polygon2D.new()
 		bar.name = "LightBar"
 		bar.color = Color(1.0, 0.2, 0.2)
-		bar.polygon = PackedVector2Array(-12, -11, 12, -11, 12, -5, -12, -5)
+		bar.polygon = PackedVector2Array([Vector2(-12, -11), Vector2(12, -11), Vector2(12, -5), Vector2(-12, -5)])
 		$Visuals.add_child(bar)
 		var tw := create_tween().set_loops()
 		tw.tween_property(bar, "color", Color(0.2, 0.4, 1.0), 0.3)

@@ -52,7 +52,6 @@ static func theme_for_index(idx: int) -> Dictionary:
 				"side": Color(0.16, 0.22, 0.18), "side_dark": Color(0.12, 0.18, 0.15),
 				"road": Color(0.19, 0.22, 0.26), "edge": Color(0.75, 0.82, 0.9),
 				"dash": Color(0.85, 0.9, 0.95, 0.9)}
-	return theme_for_index(0)
 
 
 func _ready() -> void:

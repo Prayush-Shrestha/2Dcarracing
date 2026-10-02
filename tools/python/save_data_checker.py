@@ -78,18 +78,31 @@ def check(save: dict) -> list[str]:
             errors.append(f"{key} should be an Array, got {val!r}")
         else:
             for lv in val:
-                if not (1 <= int(lv) <= 10):
+                try:
+                    if not (1 <= int(lv) <= 10):
+                        errors.append(f"{key} has invalid level {lv!r}")
+                except (TypeError, ValueError):
                     errors.append(f"{key} has invalid level {lv!r}")
     cars = v["unlocked_cars"]
     if not isinstance(cars, list):
         errors.append(f"unlocked_cars should be an Array, got {cars!r}")
     else:
         for c in cars:
-            if int(c) not in (0, 1, 2):
+            try:
+                if int(c) not in (0, 1, 2):
+                    errors.append(f"unlocked_cars has invalid car {c!r}")
+            except (TypeError, ValueError):
                 errors.append(f"unlocked_cars has invalid car {c!r}")
     if not isinstance(v["car_upgrades"], dict):
         errors.append(f"car_upgrades should be a Dictionary, got {v['car_upgrades']!r}")
-    if 1 not in [int(x) for x in v["unlocked_levels"]] if isinstance(v["unlocked_levels"], list) else True:
+    unlocked_levels = v["unlocked_levels"]
+    if isinstance(unlocked_levels, list):
+        try:
+            if 1 not in [int(x) for x in unlocked_levels]:
+                errors.append("unlocked_levels must always contain level 1")
+        except (TypeError, ValueError):
+            errors.append("unlocked_levels contains non-numeric entries")
+    else:
         errors.append("unlocked_levels must always contain level 1")
     return errors
 

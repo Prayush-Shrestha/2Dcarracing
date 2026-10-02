@@ -26,8 +26,9 @@ func _process(delta: float) -> void:
 		return
 	position.y += fall_speed * delta
 	_spin += delta * 5.0
-	var squash := absf(cos(_spin))
-	visuals.scale.x = 0.45 + 0.55 * squash
+	if visuals != null:
+		var squash := absf(cos(_spin))
+		visuals.scale.x = 0.45 + 0.55 * squash
 	if position.y > 1020.0:
 		queue_free()
 

@@ -19,6 +19,8 @@ from pathlib import Path
 
 EXT_RE = re.compile(r'path="(?P<path>res://[^"]+)"')
 
+IGNORED_DUPES = {"readme.txt", "readme.md", "license", "license.txt"}
+
 ALLOWED_EXTS = {
     ".wav", ".ogg", ".mp3",           # audio
     ".png", ".jpg", ".jpeg", ".webp", # images
@@ -71,7 +73,6 @@ def main() -> None:
     # Duplicate basenames + unsupported extensions under assets/.
     if (root / "assets").exists():
         names: Counter = Counter()
-        IGNORED_DUPES = {"readme.txt", "readme.md", "license", "license.txt"}
         for f in (root / "assets").rglob("*"):
             if not f.is_file() or f.suffix == ".import":
                 continue
@@ -85,7 +86,6 @@ def main() -> None:
                 problems.append(f"duplicate asset name x{count}: {name}")
         # Orphan .import files.
         for imp in (root / "assets").rglob("*.import"):
-            src = imp.with_suffix("")  # foo.wav.import -> foo.wav
             # Godot import files keep full name: foo.wav.import -> foo.wav
             candidate = Path(str(imp)[: -len(".import")])
             if not candidate.exists():

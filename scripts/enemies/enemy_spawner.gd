@@ -38,7 +38,8 @@ static func pick_lanes(lanes: Array, player_lane: int, count: int) -> Array:
 			continue
 		picked.append(float(lx))
 	if picked.is_empty():
-		picked.append(float(order[(player_lane + 2) % order.size()]))
+		var opposite := (player_lane + 2) % lanes.size()
+		picked.append(float(lanes[clampi(opposite, 0, lanes.size() - 1)]))
 	return picked
 
 

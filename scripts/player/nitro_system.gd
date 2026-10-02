@@ -49,10 +49,9 @@ func is_ready() -> bool:
 
 
 func _set_active(on: bool) -> void:
-	if active == on:
-		changed.emit(nitro, MAX_NITRO, active)
-		return
 	if on and nitro <= 1.0:
+		on = false
+	if active == on:
 		return
 	active = on
 	changed.emit(nitro, MAX_NITRO, active)
