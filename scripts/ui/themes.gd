@@ -69,7 +69,7 @@ func _make_card(idx: int) -> PanelContainer:
 		var part := ColorRect.new()
 		part.custom_minimum_size = Vector2(0, 30)
 		part.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		part.stretch_ratio = weights[k]
+		part.size_flags_stretch_ratio = weights[k]
 		part.color = parts[k]
 		preview.add_child(part)
 	# Title row: index badge + name + tagline.
