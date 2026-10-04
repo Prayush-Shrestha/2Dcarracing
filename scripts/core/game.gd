@@ -64,6 +64,13 @@ var _distance_label: Label = null
 var _nitro_bar: ProgressBar = null
 var _status_label: Label = null
 
+# Active environment theme (resolved from level def or TRACKS override).
+var active_theme: Dictionary = {}
+var _theme_speed_mod: float = 1.0
+var _theme_boost: bool = false
+var _boost_clock: float = 0.0
+var _boost_active: bool = false
+
 
 func _ready() -> void:
 	randomize()
@@ -128,7 +135,9 @@ func _process(delta: float) -> void:
 	_elapsed += delta
 	var base := 400.0 + float(level - 1) * 35.0 + _elapsed * 2.0
 	var nitro_mult: float = 1.45 if player.nitro_active else 1.0
-	road_speed = minf(base * nitro_mult, MAX_ROAD_SPEED)
+	_update_theme_boost(delta)
+	var boost_mult: float = 1.18 if _boost_active else 1.0
+	road_speed = minf(base * nitro_mult * _theme_speed_mod * boost_mult, MAX_ROAD_SPEED)
 	road.road_speed = road_speed
 	score += road_speed * delta * SCORE_RATE
 	distance_m += road_speed * delta * METERS_PER_PIXEL
@@ -444,7 +453,11 @@ func _update_hud() -> void:
 		hearts += "♥ " if i < player.health else "♡ "
 	health_label.text = "HEALTH: " + hearts.strip_edges()
 	if _distance_label != null:
-		_distance_label.text = "%s  •  %dm / %dm" % [lname, int(distance_m), int(target_distance)]
+		var theme_tag := str(active_theme.get("name", "")) if not active_theme.is_empty() else ""
+		if theme_tag != "" and theme_tag != str(level_def.get("theme", "")):
+			_distance_label.text = "%s  •  %s  •  %dm / %dm" % [lname, theme_tag, int(distance_m), int(target_distance)]
+		else:
+			_distance_label.text = "%s  •  %dm / %dm" % [lname, int(distance_m), int(target_distance)]
 	if _nitro_bar != null:
 		_nitro_bar.max_value = 100.0
 		_nitro_bar.value = player.nitro_fraction() * 100.0
@@ -456,6 +469,8 @@ func _update_hud() -> void:
 			parts.append("MAGNET")
 		if player.nitro_active:
 			parts.append("NITRO!")
+		if _boost_active:
+			parts.append("BOOST ZONE")
 		_status_label.text = "  ".join(parts)
 		_status_label.visible = not parts.is_empty()
 
@@ -526,11 +541,30 @@ func _apply_selected_car() -> void:
 
 
 func _apply_level_theme() -> void:
-	var theme_idx := int(level_def.get("theme_index", 0))
-	# MIXED / CHAMPIONSHIP fall back to highway visuals with full difficulty.
-	road.apply_theme_index(theme_idx)
-	var theme: Dictionary = road.theme_for_index(theme_idx)
-	player.handling *= float(theme.get("handling_mod", 1.0))
+	# TRACKS free-race override wins; otherwise the level's own environment.
+	var theme_id := GameManager.resolve_theme_id(level_def)
+	active_theme = ThemeManager.get_by_id(theme_id)
+	road.apply_theme(active_theme)
+	player.handling *= float(active_theme.get("handling_mod", 1.0))
+	_theme_speed_mod = float(active_theme.get("speed_mod", 1.0))
+	_theme_boost = bool(active_theme.get("boost_zones", false))
+	_boost_clock = 0.0
+	_boost_active = false
+
+
+## Cyberpunk / Space boost strips: 2s overdrive every 14s with flame FX.
+func _update_theme_boost(delta: float) -> void:
+	if not _theme_boost or not game_active:
+		_boost_active = false
+		return
+	_boost_clock += delta
+	var phase := fmod(_boost_clock, 14.0)
+	var want := phase >= 12.0
+	if want and not _boost_active and Engine.get_process_frames() % 2 == 0:
+		_spawn_nitro_flame()
+	if want and Engine.get_process_frames() % 6 == 0:
+		_spawn_nitro_flame()
+	_boost_active = want
 
 
 # --- audio ---

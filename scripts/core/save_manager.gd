@@ -64,7 +64,7 @@ static func load_data() -> Dictionary:
 				if not data["unlocked_cars"].has(c):
 					data["unlocked_cars"].append(c)
 	if cfg.has_section_key("save", "theme"):
-		data["selected_track"] = clampi(int(cfg.get_value("save", "theme", 0)), 0, 4)
+		data["selected_track"] = ThemeManager.migrate_legacy_index(clampi(int(cfg.get_value("save", "theme", 0)), 0, 4))
 	if cfg.has_section_key("save", "best_level"):
 		var best := maxi(1, int(cfg.get_value("save", "best_level", 1)))
 		data["current_level"] = maxi(int(data["current_level"]), mini(best, 10))
@@ -76,7 +76,7 @@ static func load_data() -> Dictionary:
 				data["unlocked_levels"].append(lv)
 	# Sanitize.
 	data["selected_car"] = clampi(int(data["selected_car"]), 0, 2)
-	data["selected_track"] = clampi(int(data["selected_track"]), 0, 4)
+	data["selected_track"] = clampi(int(data["selected_track"]), 0, ThemeManager.COUNT - 1)
 	data["current_level"] = clampi(int(data["current_level"]), 1, 10)
 	if (data["unlocked_levels"] as Array).is_empty():
 		data["unlocked_levels"] = [1]

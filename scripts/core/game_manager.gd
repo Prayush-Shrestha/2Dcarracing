@@ -17,6 +17,9 @@ const SCENE_VICTORY := "res://scenes/menus/Victory.tscn"
 
 # Level chosen from Level Select / Main Menu. Static so it survives scene changes.
 static var pending_level: int = 1
+# Optional environment override from the TRACKS screen (free race).
+# Empty = use the level's own theme_id. Set via start_theme_run().
+static var pending_theme_id: String = ""
 static var last_distance: float = 0.0
 static var last_score: int = 0
 static var last_coins: int = 0
@@ -24,8 +27,28 @@ static var last_coins: int = 0
 
 static func start_level(tree: SceneTree, level_number: int) -> void:
 	pending_level = clampi(level_number, 1, LevelManager.MAX_LEVEL)
+	pending_theme_id = ""
 	tree.paused = false
 	tree.change_scene_to_file(SCENE_GAME)
+
+
+## Free race from the theme picker: race <level_number> distance rules
+## but render + handle the chosen environment instead of the level theme.
+static func start_theme_run(tree: SceneTree, theme_id: String, level_number: int = -1) -> void:
+	if level_number < 0:
+		var data := SaveManager.load_data()
+		level_number = clampi(int(data.get("current_level", 1)), 1, LevelManager.MAX_LEVEL)
+	pending_level = clampi(level_number, 1, LevelManager.MAX_LEVEL)
+	pending_theme_id = String(theme_id)
+	tree.paused = false
+	tree.change_scene_to_file(SCENE_GAME)
+
+
+## Which environment should Game use? Override wins, else level default.
+static func resolve_theme_id(level_def: Dictionary) -> String:
+	if pending_theme_id != "":
+		return pending_theme_id
+	return str(level_def.get("theme_id", "rock_mountain"))
 
 
 static func quick_play(tree: SceneTree) -> void:
