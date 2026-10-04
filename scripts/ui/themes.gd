@@ -61,8 +61,8 @@ func _make_card(idx: int) -> PanelContainer:
 	var preview := HBoxContainer.new()
 	preview.add_theme_constant_override("separation", 0)
 	rows.add_child(preview)
-	var side_col: Color = t.get("side", Color.gray)
-	var road_col: Color = t.get("road", Color.darkgray)
+	var side_col: Color = t.get("side", Color.GRAY)
+	var road_col: Color = t.get("road", Color.DARK_GRAY)
 	var parts: Array[Color] = [side_col, accent, road_col, accent, side_col]
 	var weights: Array[float] = [1.0, 0.12, 2.2, 0.12, 1.0]
 	for k in range(parts.size()):
