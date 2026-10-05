@@ -8,6 +8,8 @@ export/
 *.exe
 *.pck
 *.zip
+*.keystore
+*.jks
 
 # os junk
 .DS_Store
@@ -18,13 +20,23 @@ desktop.ini
 *.tmp
 *.log
 *~
+*.orig
+*.rej
 .vscode/
+.vs/
 .idea/
 
 # python dev tools
 __pycache__/
 *.pyc
+.venv/
+venv/
+*.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 tools/python/levels.json
 
 # local screenshots pending capture (keep folder, ignore temp files)
