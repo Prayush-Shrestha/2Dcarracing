@@ -21,7 +21,7 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	position.y += fall_speed * delta

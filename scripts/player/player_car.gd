@@ -51,7 +51,7 @@ func _ready() -> void:
 	_apply_saved_color()
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if _dead:
 		return
 	if get_tree().paused:
@@ -67,6 +67,7 @@ func _process(delta: float) -> void:
 	_update_invuln(delta)
 	_update_magnet(delta)
 	_update_marker_bob(delta)
+	_check_sustained_contact()
 
 
 func _read_steer() -> float:
@@ -246,10 +247,32 @@ func _update_invuln(delta: float) -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
+	_handle_enemy_contact(area)
+
+
+## area_entered fires only once per overlap, so a car we survive inside
+## of (invulnerability) would otherwise never hit us again. Poll every
+## physics frame so sustained contact still lands once vulnerability
+## returns. queue_free() is deferred, so freeing while iterating is safe.
+func _check_sustained_contact() -> void:
 	if _dead:
 		return
-	if area.is_in_group("enemy"):
-		take_damage()
+	for area in get_overlapping_areas():
+		_handle_enemy_contact(area)
+
+
+func _handle_enemy_contact(area: Area2D) -> void:
+	if _dead:
+		return
+	if not is_instance_valid(area) or not area.is_in_group("enemy"):
+		return
+	# Wreck the other car only when the hit lands (HP loss or shield
+	# break). While invulnerable the enemy stays, so the poll above can
+	# still punish sitting inside traffic.
+	var vulnerable := not _invuln
+	take_damage()
+	if vulnerable:
+		area.queue_free()
 
 
 func _apply_saved_color() -> void:

@@ -28,7 +28,7 @@ func setup(p_kind: String, p_fall: float) -> void:
 		_refresh_visuals()
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	position.y += fall_speed * delta

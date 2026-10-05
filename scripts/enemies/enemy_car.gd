@@ -29,10 +29,14 @@ func _ready() -> void:
 	_wobble_phase = randf() * TAU
 	if randf() < 0.2:
 		_wobble_amp = randf_range(10.0, 28.0)
+	# The scene's RectangleShape2D is shared across instances: duplicate it
+	# so per-type hitbox resizing below never leaks onto other cars.
+	if collision != null and collision.shape != null:
+		collision.shape = collision.shape.duplicate()
 	_apply_type_visuals()
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	position.y += speed * delta
