@@ -19,7 +19,7 @@ dictionary, and persists with `SaveManager.save_data(data)`.
 | `current_level` | int | `1` | Highest level reached (1–10). |
 | `completed_levels` | Array[int] | `[]` | Levels cleared. |
 | `unlocked_levels` | Array[int] | `[1]` | Playable levels; completing N unlocks N+1. |
-| `unlocked_cars` | Array[int] | `[0]` | Owned cars (0 STARTER, 1 SPORT, 2 SUPER). |
+| `unlocked_cars` | Array[int] | `[0]` | Owned cars (0 STARTER, 1 SPORT, 2 SUPER, 3 VIPER, 4 RAINBOW). |
 | `selected_car` | int | `0` | Active car (legacy mirror `selected`). |
 | `car_upgrades` | Dictionary | `{}` | `{"0": {"speed": 1, ...}}` per car, 0–3 each. |
 | `selected_track` | int | `0` | TRACKS preference 0–4 (legacy mirror `theme`). |
@@ -56,7 +56,7 @@ the legacy mirrors.
 If the file is absent or corrupt, `load_data()` returns safe defaults:
 level 1 unlocked, STARTER selected, volumes 0.8/0.9, everything else
 zero/empty. The game starts cleanly with no crash. Invalid values are
-clamped (`selected_car` 0–2, `selected_track` 0–4, `current_level`
+clamped (`selected_car` 0–4, `selected_track` 0–4, `current_level`
 1–10, volumes 0–1, empty unlock lists reset to `[1]`/`[0]`).
 
 ## Reset behavior

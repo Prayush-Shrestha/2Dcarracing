@@ -67,7 +67,7 @@ def check(save: dict) -> list[str]:
     num("coins", 0, 999_999)
     num("high_score", 0, 99_999_999)
     num("current_level", 1, 10)
-    num("selected_car", 0, 2)
+    num("selected_car", 0, 4)
     num("selected_track", 0, 4)
     num("music_volume", 0.0, 1.0)
     num("sfx_volume", 0.0, 1.0)
@@ -89,7 +89,7 @@ def check(save: dict) -> list[str]:
     else:
         for c in cars:
             try:
-                if int(c) not in (0, 1, 2):
+                if int(c) not in (0, 1, 2, 3, 4):
                     errors.append(f"unlocked_cars has invalid car {c!r}")
             except (TypeError, ValueError):
                 errors.append(f"unlocked_cars has invalid car {c!r}")

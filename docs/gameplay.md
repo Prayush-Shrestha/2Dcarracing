@@ -51,6 +51,8 @@ Victory screen.
 | STARTER | Free | 60 | 60 | 80 |
 | SPORT | 500 | 80 | 75 | 70 |
 | SUPER | 1500 | 95 | 90 | 60 |
+| VIPER (pink) | 1000 | 75 | 70 | 95 |
+| RAINBOW (cycles hues) | 2500 | 88 | 85 | 85 |
 
 Each stat upgrades **0 → 3** for **150 / 350 / 700 coins** (+7 per step).
 Garage shows `Speed ★★☆☆☆`-style stars, current vs. cost, and only

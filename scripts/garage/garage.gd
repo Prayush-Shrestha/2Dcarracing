@@ -9,13 +9,15 @@ var _save: Dictionary = {}
 @onready var card0: PanelContainer = $Cards/Card0
 @onready var card1: PanelContainer = $Cards/Card1
 @onready var card2: PanelContainer = $Cards/Card2
+@onready var card3: PanelContainer = $Cards/Card3
+@onready var card4: PanelContainer = $Cards/Card4
 @onready var click_player: AudioStreamPlayer = $ClickPlayer
 
 var _cards: Array = []
 
 
 func _ready() -> void:
-	_cards = [card0, card1, card2]
+	_cards = [card0, card1, card2, card3, card4]
 	_save = SaveManager.load_data()
 	back_button.pressed.connect(_on_back)
 	for i in range(_cards.size()):
@@ -25,6 +27,14 @@ func _ready() -> void:
 		_ensure_upgrade_rows(i)
 	_refresh()
 	_fade_in()
+
+
+func _process(_delta: float) -> void:
+	# Animate rainbow paint on previews so the card shows the real effect.
+	for i in range(_cards.size()):
+		if bool(CarUpgrade.base_car(i).get("rainbow", false)):
+			var preview: ColorRect = _cards[i].get_node("Margin/Rows/Preview")
+			preview.color = Color.from_hsv(fposmod(Time.get_ticks_msec() / 4000.0, 1.0), 0.85, 1.0)
 
 
 func _ensure_upgrade_rows(idx: int) -> void:

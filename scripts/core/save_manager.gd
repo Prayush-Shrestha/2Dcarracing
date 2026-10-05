@@ -75,7 +75,7 @@ static func load_data() -> Dictionary:
 			if not data["unlocked_levels"].has(lv):
 				data["unlocked_levels"].append(lv)
 	# Sanitize.
-	data["selected_car"] = clampi(int(data["selected_car"]), 0, 2)
+	data["selected_car"] = clampi(int(data["selected_car"]), 0, CarUpgrade.car_count() - 1)
 	data["selected_track"] = clampi(int(data["selected_track"]), 0, ThemeManager.COUNT - 1)
 	data["current_level"] = clampi(int(data["current_level"]), 1, 10)
 	if (data["unlocked_levels"] as Array).is_empty():

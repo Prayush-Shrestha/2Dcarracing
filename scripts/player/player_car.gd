@@ -25,6 +25,7 @@ var nitro_active: bool = false
 
 var _vel_x: float = 0.0
 var _invuln: bool = false
+var _rainbow: bool = false
 var _invuln_left: float = 0.0
 var _blink_t: float = 0.0
 var _dead: bool = false
@@ -67,6 +68,7 @@ func _physics_process(delta: float) -> void:
 	_update_invuln(delta)
 	_update_magnet(delta)
 	_update_marker_bob(delta)
+	_update_rainbow()
 	_check_sustained_contact()
 
 
@@ -91,9 +93,7 @@ func apply_car_stats(car: Dictionary) -> void:
 	var hnd := float(car.get("handling", 70))
 	lateral_speed = 300.0 + spd * 2.4
 	handling = 5.0 + hnd * 0.07
-	var col: Color = car.get("color", Color(0.18, 0.55, 1.0))
-	if body:
-		body.color = col
+	_apply_paint(car)
 
 
 func take_damage() -> bool:
@@ -289,5 +289,19 @@ func _apply_saved_color() -> void:
 	var selected := int(data.get("selected_car", 0))
 	var upgrades: Dictionary = CarUpgrade.upgrades_for(data, selected)
 	var stats := CarUpgrade.effective_stats(selected, upgrades)
+	_apply_paint(stats)
+
+
+## Static body color, or animated rainbow paint when the car has it.
+func _apply_paint(car: Dictionary) -> void:
+	_rainbow = bool(car.get("rainbow", false))
+	if _rainbow:
+		return
 	if body:
-		body.color = stats.get("color", Color(0.18, 0.55, 1.0))
+		body.color = car.get("color", Color(0.18, 0.55, 1.0))
+
+
+func _update_rainbow() -> void:
+	if not _rainbow or body == null:
+		return
+	body.color = Color.from_hsv(fposmod(Time.get_ticks_msec() / 4000.0, 1.0), 0.85, 1.0)

@@ -15,6 +15,12 @@ const CARS: Array[Dictionary] = [
 	{"name": "SUPER", "cost": 1500, "speed": 95.0, "accel": 90.0,
 		"handling": 60.0, "color": Color(0.95, 0.75, 0.2),
 		"desc": "Very fast. Needs control."},
+	{"name": "VIPER", "cost": 1000, "speed": 75.0, "accel": 70.0,
+		"handling": 95.0, "color": Color(1.0, 0.15, 0.45),
+		"desc": "Pink street machine. Glues itself to corners."},
+	{"name": "RAINBOW", "cost": 2500, "speed": 88.0, "accel": 85.0,
+		"handling": 85.0, "color": Color(1.0, 0.2, 0.2), "rainbow": true,
+		"desc": "Shifting rainbow paint. Fast at everything."},
 ]
 
 # Cost per upgrade step (level 0->1, 1->2, 2->3).
@@ -65,6 +71,7 @@ static func effective_stats(car_index: int, upgrades: Dictionary) -> Dictionary:
 		"accel": float(base["accel"]) + float(upgrades.get("accel", 0)) * STAT_GAIN,
 		"handling": float(base["handling"]) + float(upgrades.get("handling", 0)) * STAT_GAIN,
 		"color": base["color"],
+		"rainbow": bool(base.get("rainbow", false)),
 		"name": base["name"],
 	}
 

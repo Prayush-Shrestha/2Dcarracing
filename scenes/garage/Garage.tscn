@@ -184,4 +184,88 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "UNLOCK"
 
+[node name="Card3" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card3"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card3/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="ColorRect" parent="Cards/Card3/Margin/Rows"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+color = Color(1, 0.15, 0.45, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "VIPER"
+
+[node name="StatLabel" type="Label" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.82, 1)
+theme_override_font_sizes/font_size = 15
+text = "stats"
+
+[node name="DescLabel" type="Label" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card3/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "UNLOCK"
+
+[node name="Card4" type="PanelContainer" parent="Cards"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Cards/Card4"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Cards/Card4/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Preview" type="ColorRect" parent="Cards/Card4/Margin/Rows"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+color = Color(1, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="Cards/Card4/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "RAINBOW"
+
+[node name="StatLabel" type="Label" parent="Cards/Card4/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.82, 1)
+theme_override_font_sizes/font_size = 15
+text = "stats"
+
+[node name="DescLabel" type="Label" parent="Cards/Card4/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.63, 0.67, 1)
+theme_override_font_sizes/font_size = 14
+text = "desc"
+
+[node name="ActionButton" type="Button" parent="Cards/Card4/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "UNLOCK"
+
 [node name="ClickPlayer" type="AudioStreamPlayer" parent="."]
