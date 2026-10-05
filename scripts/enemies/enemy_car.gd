@@ -8,6 +8,7 @@ var speed: float = 300.0
 var enemy_type: String = "normal"
 var _wobble_phase: float = 0.0
 var _wobble_amp: float = 0.0
+var _wrecked: bool = false
 
 @onready var body: Polygon2D = $Visuals/Body
 @onready var collision: CollisionShape2D = $CollisionShape2D
@@ -40,11 +41,30 @@ func _physics_process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	position.y += speed * delta
-	if _wobble_amp > 0.0:
+	if _wobble_amp > 0.0 and not _wrecked:
 		_wobble_phase += delta * 2.0
 		position.x += sin(_wobble_phase) * _wobble_amp * delta
 	if position.y > 1060.0:
 		queue_free()
+
+
+## Crash response: spin off sideways and fade instead of blinking out.
+## Drops out of the "enemy" group and disables collision at once so the
+## wreck can't deal a second hit on its way out.
+func wreck() -> void:
+	if _wrecked:
+		return
+	_wrecked = true
+	remove_from_group("enemy")
+	set_deferred("monitoring", false)
+	set_deferred("monitorable", false)
+	collision.set_deferred("disabled", true)
+	var dir := 1.0 if randf() < 0.5 else -1.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(self, "rotation", rotation + dir * randf_range(1.4, 2.4), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(self, "position:x", position.x + dir * randf_range(70.0, 130.0), 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(self, "modulate:a", 0.0, 0.45)
+	tw.chain().tween_callback(queue_free)
 
 
 func setup(p_speed: float, lane_x: float, start_y: float = -70.0, p_type: String = "normal") -> void:
@@ -71,20 +91,22 @@ func _apply_type_visuals() -> void:
 	var palette: Array = TYPE_COLORS.get(enemy_type, TYPE_COLORS["normal"])
 	body.color = palette[randi() % palette.size()]
 	# Larger hitbox for truck/bus, sleeker for sports.
+	# Boxes stay ~80% of the visuals (see index.html 0.7x precedent) so
+	# near-miss grazes don't cost health unfairly.
 	var rect := collision.shape as RectangleShape2D
 	if rect != null:
 		match enemy_type:
 			"truck":
-				rect.size = Vector2(40, 92)
+				rect.size = Vector2(34, 76)
 				body.scale = Vector2(1.08, 1.3)
 			"bus":
-				rect.size = Vector2(42, 100)
+				rect.size = Vector2(36, 84)
 				body.scale = Vector2(1.12, 1.42)
 			"sports":
-				rect.size = Vector2(34, 62)
+				rect.size = Vector2(28, 52)
 				body.scale = Vector2(0.95, 0.92)
 			_:
-				rect.size = Vector2(36, 68)
+				rect.size = Vector2(30, 56)
 				body.scale = Vector2.ONE
 	# Police flashing light bar (code-drawn, no assets needed).
 	if enemy_type == "police" and not has_node("Visuals/LightBar"):

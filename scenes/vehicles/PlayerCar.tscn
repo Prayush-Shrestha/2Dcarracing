@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/player/player_car.gd" id="1_pcar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pcol"]
-size = Vector2(36, 68)
+size = Vector2(30, 58)
 
 [node name="PlayerCar" type="Area2D"]
 collision_layer = 2

@@ -270,9 +270,18 @@ func _handle_enemy_contact(area: Area2D) -> void:
 	# break). While invulnerable the enemy stays, so the poll above can
 	# still punish sitting inside traffic.
 	var vulnerable := not _invuln
+	var shove := signf(position.x - area.position.x)
+	if shove == 0.0:
+		shove = 1.0 if randf() < 0.5 else -1.0
 	take_damage()
 	if vulnerable:
-		area.queue_free()
+		# Physical shove away from the impact; steering lerp decays it
+		# back over ~0.3s so it reads as a bump, not a teleport.
+		_vel_x = shove * 340.0
+		if area.has_method("wreck"):
+			area.wreck()
+		else:
+			area.queue_free()
 
 
 func _apply_saved_color() -> void:

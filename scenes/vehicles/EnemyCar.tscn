@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/enemies/enemy_car.gd" id="1_ecar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ecol"]
-size = Vector2(36, 68)
+size = Vector2(30, 56)
 
 [node name="EnemyCar" type="Area2D"]
 collision_layer = 4
