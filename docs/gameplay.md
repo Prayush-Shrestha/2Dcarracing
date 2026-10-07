@@ -90,11 +90,13 @@ Types scale with level (see `EnemySpawner.pick_type`):
 
 | Theme | Look | Handling |
 |---|---|---|
-| HIGHWAY | daylight, grey road | normal |
-| DESERT | sand sides, red edges | normal |
-| NIGHT | dark + amber lines, dim overlay | normal |
-| ICE | snow sides, pale road | 0.70× grip — smooth inputs win |
-| RAIN | wet road, rain particles | 0.88× grip — slightly loose |
+| ROCK MOUNTAIN | rocky cliffs, dirt track | 0.90× grip — rugged |
+| DESERT RALLY | sand sides, red edges | 0.95× grip — loose + dust |
+| SNOW PEAK | snow sides, pale road | 0.65× grip — smooth inputs win |
+| FOREST ADVENTURE | wet pines, rain particles | 0.85× grip — slightly slick |
+| CYBERPUNK CITY | neon night + boost strips | 1.00× + boost zones |
+| VOLCANO ZONE | lava glow, embers | 0.90× grip — rough |
+| SPACE / ALIEN | crystals, starfield + boost strips | 1.00× + boost zones |
 
 Levels fix their own theme (e.g. Lv5 = ICE, Lv7 = RAIN, Lv10 =
 CHAMPIONSHIP on highway visuals). The TRACKS screen stores a free-drive

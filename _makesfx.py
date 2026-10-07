@@ -1,7 +1,8 @@
 """Synthesize the Street Rush SFX set as 16-bit mono WAVs.
 
 Sounds land in assets/sounds/ where game.gd picks them up automatically:
-  click.wav, coin.wav, crash.wav, level.wav, engine.wav, gameover.wav
+  click.wav, coin.wav, crash.wav, level.wav, engine.wav, gameover.wav,
+  victory.wav, nitro.wav, powerup.wav
 
 Usage:
     py _makesfx.py
@@ -111,6 +112,35 @@ def main() -> None:
         for k, f in enumerate(down)
     ])
     save("gameover.wav", over)
+
+    # Victory: rising C-E-G-C-E fanfare (matches audio_manager fallback notes)
+    up = [523.25, 659.25, 783.99, 1046.5, 1318.5]
+    fanfare = mix(*[
+        tone(f, 0.16, harm=(1.0, 0.3), decay=4.0, delay=k * 0.13, total=0.9)
+        for k, f in enumerate(up)
+    ])
+    save("victory.wav", fanfare)
+
+    # Nitro: rising whoosh 220 -> 880Hz sweep
+    dur_n = 0.45
+    n_n = int(RATE * dur_n)
+    nitro = []
+    for i in range(n_n):
+        t = i / RATE
+        k = i / max(1, n_n - 1)
+        f = 220.0 + (880.0 - 220.0) * k
+        env = math.sin(math.pi * k)  # swell in/out
+        s = (math.sin(math.tau * f * t) * 0.6
+             + math.sin(math.tau * f * 2.0 * t) * 0.25) * env
+        nitro.append(s * 0.8 + random.uniform(-0.08, 0.08) * env)
+    save("nitro.wav", nitro)
+
+    # Powerup: bright two-step chime 740 -> 1180Hz
+    power = mix(
+        tone(740.0, 0.12, harm=(1.0, 0.4), decay=4.0),
+        tone(1180.0, 0.25, harm=(1.0, 0.4), decay=5.0, delay=0.1, total=0.35),
+    )
+    save("powerup.wav", power)
 
     print("done ->", OUT)
 

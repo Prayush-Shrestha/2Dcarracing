@@ -46,8 +46,9 @@ responsibility.
   (`normal, truck, bus, police, sports`): size/color/speed feel.
 - `scripts/enemies/enemy_spawner.gd` — fair spawning: max 3 of 4 lanes,
   usually skips the player's lane, weighted type per level.
-- `scripts/world/road.gd` — scrolling dashes, 5 themes (HIGHWAY, DESERT,
-  ICE, NIGHT, RAIN) + rain particles + night dim. `apply_theme_index()`.
+- `scripts/world/road.gd` — scrolling dashes, 7 themes (ROCK MOUNTAIN,
+  DESERT RALLY, SNOW PEAK, FOREST ADVENTURE, CYBERPUNK CITY, VOLCANO ZONE,
+  SPACE / ALIEN) + weather particles + dim. `apply_theme_index()`.
 - `scripts/world/coin.gd` — falling collectible, `collected` signal.
 - `scripts/world/powerups.gd` (`PowerUpDef`) — `shield`/`magnet`
   constants, durations, colors.
@@ -56,12 +57,12 @@ responsibility.
 
 ## Meta scripts
 
-- `scripts/garage/garage.gd` + `car_upgrade.gd` (`CarUpgrade`) — 3 cars,
+- `scripts/garage/garage.gd` + `car_upgrade.gd` (`CarUpgrade`) — 5 cars,
   coin unlock, per-stat upgrades (0–3, costs 150/350/700, +7 each),
   effective stats shared with the player.
 - `scripts/ui/` — `main_menu.gd` (animated dashes, hover, PLAY/LEVELS/
   GARAGE/TRACKS/SETTINGS/QUIT), `level_select.gd` (10 cards with
-  COMPLETED/UNLOCKED/LOCKED), `themes.gd` (5 track cards),
+  COMPLETED/UNLOCKED/LOCKED), `themes.gd` (7 track cards),
   `settings.gd` (music/SFX sliders, mute, confirmed reset),
   `pause_menu.gd` (overlay + quick volumes), `game_over.gd`,
   `victory.gd` (score/distance/coins + navigation).

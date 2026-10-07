@@ -2,7 +2,7 @@
 
 2D top-down racing game for **Godot 4.x**. Dodge traffic, collect coins,
 burn nitro, grab shield/magnet pickups and clear **10 levels** to win the
-championship. Clean indie UI, garage with upgrades, 5 track themes,
+championship. Clean indie UI, garage with upgrades, 7 track themes,
 persistent saves and synthesized audio that works with zero assets.
 
 ## Features
@@ -10,8 +10,9 @@ persistent saves and synthesized audio that works with zero assets.
 - 2D top-down racing with smooth keyboard steering
 - 10-level progression (distance-based, gradual difficulty)
 - Level unlock system with Level Select (completed / unlocked / locked)
-- Garage: STARTER / SPORT / SUPER + per-stat upgrades
-- 5 track themes: HIGHWAY, DESERT, ICE, NIGHT, RAIN (+ MIXED / CHAMPIONSHIP)
+- Garage: STARTER / SPORT / SUPER / VIPER / RAINBOW + per-stat upgrades
+- 7 track themes: ROCK MOUNTAIN, DESERT RALLY, SNOW PEAK, FOREST ADVENTURE,
+  CYBERPUNK CITY, VOLCANO ZONE, SPACE / ALIEN
 - Traffic system: normal, truck, bus, police, sports cars (fair spawning)
 - Coins with per-level multiplier + persistent totals
 - Nitro boost (SPACE) with meter, flames and engine pitch
@@ -112,8 +113,25 @@ Street-Rush/
 4. `PLAY` continues at your unlocked level, `LEVELS` picks any unlocked
    level, `GARAGE` spends coins, `TRACKS` sets the free theme.
 
-Optional audio: run `python _makesfx.py` to synthesize the base `.wav`
-set into `assets/sounds/` (the game also works without them).
+Optional audio: run `python _makesfx.py` to synthesize the full 9-file
+`.wav` set into `assets/sounds/` (the game also works without them —
+each missing file falls back to a synthesized tone in code).
+
+## Release Checklist (v1.0.0)
+
+Final-stage steps before tagging `v1.0.0`:
+
+1. **Validate:** `python tools/python/asset_validator.py` and
+   `python tools/python/game_data_analyzer.py` must pass.
+2. **Playtest in Godot:** F5 → complete levels 1–10, check victory,
+   game-over, pause (ESC), settings reset, garage purchases, save
+   persistence (`user://street_rush_save.cfg`).
+3. **Screenshots:** capture the 7 PNGs listed above into `screenshots/`.
+4. **Export:** install Godot export templates (`Editor → Manage Export
+   Templates`), then `Project → Export…` using `export_presets.cfg`
+   (Windows / Web / Android — file is git-ignored by design, keep your
+   local copy; Android needs a keystore for signing).
+5. **Tag:** `git tag v1.0.0` + GitHub release with the exported builds.
 
 ## Development Tools
 
