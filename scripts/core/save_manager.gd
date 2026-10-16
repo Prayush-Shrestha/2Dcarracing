@@ -25,6 +25,7 @@ static func default_data() -> Dictionary:
 		"music_volume": 0.8,
 		"sfx_volume": 0.9,
 		"muted": false,
+		"control_mode": "both",
 		"last_score": 0,
 		"last_coins": 0,
 		"last_level": 1,
@@ -84,6 +85,8 @@ static func load_data() -> Dictionary:
 		data["unlocked_cars"] = [0]
 	data["music_volume"] = clampf(float(data["music_volume"]), 0.0, 1.0)
 	data["sfx_volume"] = clampf(float(data["sfx_volume"]), 0.0, 1.0)
+	if str(data.get("control_mode", "both")) not in ["buttons", "swipe", "both"]:
+		data["control_mode"] = "both"
 	return data
 
 
@@ -113,11 +116,12 @@ static func save_data(data: Dictionary) -> void:
 
 static func reset_progress() -> void:
 	var fresh: Dictionary = default_data()
-	# Preserve audio prefs on reset (less surprising).
+	# Preserve audio + control prefs on reset (less surprising).
 	var current := load_data()
 	fresh["music_volume"] = current["music_volume"]
 	fresh["sfx_volume"] = current["sfx_volume"]
 	fresh["muted"] = current["muted"]
+	fresh["control_mode"] = current.get("control_mode", "both")
 	save_data(fresh)
 
 

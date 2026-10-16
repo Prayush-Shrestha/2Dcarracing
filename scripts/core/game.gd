@@ -33,6 +33,15 @@ const HELP_AUTO_HIDE := 8.0
 var _help_visible: bool = true
 var _help_elapsed: float = 0.0
 
+# Touch steering mode from Settings ("buttons" / "swipe" / "both").
+# Only the chosen method drives the car; the NITRO button shows in all.
+var _control_mode: String = "both"
+const SWIPE_FULL_DRAG := 48.0
+const SWIPE_IDLE_TIMEOUT := 0.15
+var _swipe_steer: float = 0.0
+var _swipe_touch_id: int = -1
+var _swipe_idle: float = 99.0
+
 @onready var road = $Road
 @onready var player = $Player
 @onready var enemy_holder: Node2D = $EnemyHolder
@@ -76,6 +85,9 @@ func _ready() -> void:
 	randomize()
 	GameManager.clamp_pending()
 	_save = SaveManager.load_data()
+	_control_mode = str(_save.get("control_mode", "both"))
+	if _control_mode not in ["buttons", "swipe", "both"]:
+		_control_mode = "both"
 	level = clampi(GameManager.pending_level, 1, LevelManager.MAX_LEVEL)
 	level_def = LevelManager.get_level(level)
 	target_distance = float(level_def.get("distance", 1000.0))
@@ -84,6 +96,7 @@ func _ready() -> void:
 	_apply_level_theme()
 
 	_ensure_hud_nodes()
+	_ensure_touch_controls()
 	road.road_speed = road_speed
 	enemy_timer.wait_time = float(level_def.get("spawn_interval", 0.9))
 	coin_timer.wait_time = 1.4
@@ -122,6 +135,7 @@ func _ready() -> void:
 	help_panel.show()
 	_help_visible = true
 	_help_elapsed = 0.0
+	_apply_touch_help_text()
 
 	_start_engine()
 	_update_hud()
@@ -162,6 +176,7 @@ func _process(delta: float) -> void:
 	_update_engine_pitch()
 	_update_hud()
 	_update_nitro_audio()
+	_update_swipe_idle(delta)
 
 	if _shake > 0.0:
 		_shake = maxf(_shake - delta * 22.0, 0.0)
@@ -180,6 +195,35 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
 		_toggle_pause()
+		return
+	_handle_swipe_event(event)
+
+
+## Swipe steering: a drag anywhere outside the buttons steers the car.
+## Relative motion (no screen mapping needed), decays when held still.
+func _swipe_allowed() -> bool:
+	return game_active and _control_mode in ["swipe", "both"]
+
+
+func _handle_swipe_event(event: InputEvent) -> void:
+	if not _swipe_allowed():
+		return
+	if event is InputEventScreenTouch:
+		var t := event as InputEventScreenTouch
+		if t.pressed:
+			if _swipe_touch_id == -1:
+				_swipe_touch_id = t.index
+				_swipe_idle = 0.0
+		elif t.index == _swipe_touch_id:
+			_swipe_touch_id = -1
+			_swipe_steer = 0.0
+			_update_touch_steer()
+	elif event is InputEventScreenDrag:
+		var d := event as InputEventScreenDrag
+		if d.index == _swipe_touch_id:
+			_swipe_steer = clampf(d.relative.x / SWIPE_FULL_DRAG, -1.0, 1.0)
+			_swipe_idle = 0.0
+			_update_touch_steer()
 
 
 # --- spawning ---
@@ -428,6 +472,22 @@ func _hide_help() -> void:
 	help_panel.hide()
 
 
+## On phones the help panel shows the touch controls instead of keys.
+func _apply_touch_help_text() -> void:
+	if not _is_touch_device():
+		return
+	var box_path := "HUD/HelpPanel/Margin/Box"
+	var texts := {
+		"C1": "◀ ▶ buttons or drag: steer",
+		"C2": "NITRO button: boost",
+		"C5": "Change in Settings: buttons / swipe",
+	}
+	for node_name in texts.keys():
+		var lab := get_node_or_null(box_path + "/" + node_name) as Label
+		if lab != null:
+			lab.text = texts[node_name]
+
+
 func _restart() -> void:
 	get_tree().paused = false
 	get_tree().reload_current_scene()
@@ -589,6 +649,18 @@ func _update_engine_pitch() -> void:
 		engine_player.pitch_scale = (0.85 + road_speed / 1400.0) * boost
 
 
+func _update_swipe_idle(delta: float) -> void:
+	if not _swipe_allowed() or _swipe_steer == 0.0:
+		return
+	_swipe_idle += delta
+	if _swipe_idle >= SWIPE_IDLE_TIMEOUT:
+		# Finger held still (or lifted without release event): straighten out.
+		_swipe_steer = lerpf(_swipe_steer, 0.0, clampf(10.0 * delta, 0.0, 1.0))
+		if absf(_swipe_steer) < 0.02:
+			_swipe_steer = 0.0
+		_update_touch_steer()
+
+
 func _update_nitro_audio() -> void:
 	var is_active: bool = player.nitro_active
 	if is_active and not _nitro_was_active:
@@ -665,3 +737,119 @@ func _ensure_level_panel_buttons() -> void:
 		b.add_theme_font_size_override("font_size", 18)
 		box.add_child(b)
 		b.pressed.connect(_to_levels)
+
+
+# --- touch controls (mobile) ---
+var _touch_left_held: bool = false
+var _touch_right_held: bool = false
+
+
+func _is_touch_device() -> bool:
+	if DisplayServer.is_touchscreen_available():
+		return true
+	for f in ["mobile", "android", "ios", "web_android", "web_ios"]:
+		if OS.has_feature(f):
+			return true
+	return false
+
+
+func _ensure_touch_controls() -> void:
+	if has_node("HUD/TouchControls"):
+		_apply_touch_mode_visibility()
+		return
+	var layer := Control.new()
+	layer.name = "TouchControls"
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$HUD.add_child(layer)
+	_left_btn = _make_touch_button(layer, "TouchLeft", "◀", 36,
+		Control.PRESET_BOTTOM_LEFT, Vector2(16, -140), Vector2(136, -16))
+	_right_btn = _make_touch_button(layer, "TouchRight", "▶", 36,
+		Control.PRESET_BOTTOM_LEFT, Vector2(152, -140), Vector2(272, -16))
+	_nitro_btn = _make_touch_button(layer, "TouchNitro", "NITRO", 20,
+		Control.PRESET_BOTTOM_RIGHT, Vector2(-176, -140), Vector2(-16, -16))
+	_left_btn.button_down.connect(_on_touch_left_down)
+	_left_btn.button_up.connect(_on_touch_left_up)
+	_right_btn.button_down.connect(_on_touch_right_down)
+	_right_btn.button_up.connect(_on_touch_right_up)
+	_nitro_btn.button_down.connect(_on_touch_nitro_down)
+	_nitro_btn.button_up.connect(_on_touch_nitro_up)
+	_apply_touch_mode_visibility()
+
+
+## Only the Settings-chosen method shows: steering buttons hide in
+## swipe mode, the NITRO button stays for boosting in every mode.
+func _apply_touch_mode_visibility() -> void:
+	var layer: Control = $HUD/TouchControls
+	layer.visible = _is_touch_device()
+	if _left_btn != null:
+		_left_btn.visible = _control_mode in ["buttons", "both"]
+	if _right_btn != null:
+		_right_btn.visible = _control_mode in ["buttons", "both"]
+	if _nitro_btn != null:
+		_nitro_btn.visible = true
+
+
+var _left_btn: Button = null
+var _right_btn: Button = null
+var _nitro_btn: Button = null
+
+
+func _make_touch_button(parent: Control, btn_name: String, text: String, font_size: int, preset: int, offset_min: Vector2, offset_max: Vector2) -> Button:
+	var b := Button.new()
+	b.name = btn_name
+	b.text = text
+	b.focus_mode = Control.FOCUS_NONE
+	b.add_theme_font_size_override("font_size", font_size)
+	b.modulate = Color(1, 1, 1, 0.8)
+	b.set_anchors_preset(preset)
+	b.offset_left = offset_min.x
+	b.offset_top = offset_min.y
+	b.offset_right = offset_max.x
+	b.offset_bottom = offset_max.y
+	parent.add_child(b)
+	return b
+
+
+func _update_touch_steer() -> void:
+	if player == null:
+		return
+	var s := 0.0
+	if _control_mode in ["buttons", "both"]:
+		if _touch_left_held:
+			s -= 1.0
+		if _touch_right_held:
+			s += 1.0
+	if _control_mode in ["swipe", "both"]:
+		s += _swipe_steer
+	player.touch_steer = clampf(s, -1.0, 1.0)
+
+
+func _on_touch_left_down() -> void:
+	_touch_left_held = true
+	_update_touch_steer()
+
+
+func _on_touch_left_up() -> void:
+	_touch_left_held = false
+	_update_touch_steer()
+
+
+func _on_touch_right_down() -> void:
+	_touch_right_held = true
+	_update_touch_steer()
+
+
+func _on_touch_right_up() -> void:
+	_touch_right_held = false
+	_update_touch_steer()
+
+
+func _on_touch_nitro_down() -> void:
+	if player != null:
+		player.touch_nitro = true
+
+
+func _on_touch_nitro_up() -> void:
+	if player != null:
+		player.touch_nitro = false

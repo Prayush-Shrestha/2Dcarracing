@@ -11,6 +11,7 @@ var _confirming: bool = false
 @onready var sfx_slider: HSlider = $Scroll/Rows/SfxRow/SfxSlider
 @onready var sfx_value: Label = $Scroll/Rows/SfxRow/SfxValue
 @onready var mute_check: CheckButton = $Scroll/Rows/MuteCheck
+@onready var control_mode_option: OptionButton = $Scroll/Rows/ControlModeRow/ControlModeOption
 @onready var reset_button: Button = $Scroll/Rows/ResetButton
 @onready var confirm_box: VBoxContainer = $Scroll/Rows/ConfirmBox
 @onready var confirm_yes: Button = $Scroll/Rows/ConfirmBox/ConfirmRow/YesButton
@@ -24,15 +25,43 @@ func _ready() -> void:
 	music_slider.value_changed.connect(_on_music)
 	sfx_slider.value_changed.connect(_on_sfx)
 	mute_check.toggled.connect(_on_mute)
+	control_mode_option.item_selected.connect(_on_control_mode)
 	reset_button.pressed.connect(_on_reset_pressed)
 	confirm_yes.pressed.connect(_on_reset_confirmed)
 	confirm_no.pressed.connect(_on_reset_cancelled)
 	music_slider.value = float(_save.get("music_volume", 0.8)) * 100.0
 	sfx_slider.value = float(_save.get("sfx_volume", 0.9)) * 100.0
 	mute_check.set_pressed_no_signal(bool(_save.get("muted", false)))
+	_setup_control_mode_option()
 	confirm_box.hide()
 	_refresh_labels()
 	_fade_in()
+
+
+## Control-mode dropdown: Buttons / Swipe / Both. Only the chosen
+## steering method is active in-game; nitro button shows in all modes.
+const CONTROL_MODES: Array[String] = ["buttons", "swipe", "both"]
+const CONTROL_LABELS: Array[String] = ["Buttons", "Swipe", "Both"]
+
+
+func _setup_control_mode_option() -> void:
+	control_mode_option.clear()
+	for label in CONTROL_LABELS:
+		control_mode_option.add_item(label)
+	control_mode_option.selected = _control_mode_index()
+
+
+func _control_mode_index() -> int:
+	var idx := CONTROL_MODES.find(str(_save.get("control_mode", "both")))
+	return idx if idx >= 0 else 2
+
+
+func _on_control_mode(idx: int) -> void:
+	if idx < 0 or idx >= CONTROL_MODES.size():
+		return
+	_save["control_mode"] = CONTROL_MODES[idx]
+	SaveManager.save_data(_save)
+	_click()
 
 
 func _refresh_labels() -> void:
@@ -84,6 +113,7 @@ func _on_reset_confirmed() -> void:
 	music_slider.set_value_no_signal(float(_save.get("music_volume", 0.8)) * 100.0)
 	sfx_slider.set_value_no_signal(float(_save.get("sfx_volume", 0.9)) * 100.0)
 	mute_check.set_pressed_no_signal(bool(_save.get("muted", false)))
+	control_mode_option.select(_control_mode_index())
 	_apply_audio()
 	_refresh_labels()
 	confirm_box.hide()

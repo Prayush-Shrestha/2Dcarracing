@@ -32,6 +32,10 @@ var _dead: bool = false
 var _magnet_left: float = 0.0
 var _nitro: float = 100.0
 var _nitro_cool: float = 99.0
+# Touch controls (set by on-screen buttons in game.gd on mobile).
+# -1..1, added to keyboard steer. touch_nitro held = boost.
+var touch_steer: float = 0.0
+var touch_nitro: bool = false
 var _shield_ring: Polygon2D = null
 
 const NITRO_MAX := 100.0
@@ -79,10 +83,13 @@ func _read_steer() -> float:
 		steer -= 1.0
 	if Input.is_action_pressed("move_right") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_D):
 		steer += 1.0
-	return steer
+	steer += touch_steer
+	return clampf(steer, -1.0, 1.0)
 
 
 func wants_nitro() -> bool:
+	if touch_nitro:
+		return true
 	if Input.is_action_pressed("nitro") or Input.is_key_pressed(KEY_SPACE):
 		return true
 	return false
