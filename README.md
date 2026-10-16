@@ -42,6 +42,9 @@ SPACE                          — nitro boost
 ESC                            — pause / resume
 ```
 
+On phone (Settings → Touch Controls: Buttons / Swipe / Both):
+`◀ ▶` buttons and/or drag to steer, `NITRO` button or double-tap to boost.
+
 Also on screen: `II` pause button, `?` help panel.
 
 ## Game Flow

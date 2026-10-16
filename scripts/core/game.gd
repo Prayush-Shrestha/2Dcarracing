@@ -42,6 +42,15 @@ var _swipe_steer: float = 0.0
 var _swipe_touch_id: int = -1
 var _swipe_idle: float = 99.0
 
+# Double-tap nitro: two quick taps close together fire a short boost.
+# Works in every touch mode, like the NITRO button.
+const DOUBLE_TAP_MSEC := 350
+const DOUBLE_TAP_DIST := 80.0
+const NITRO_BURST_TIME := 1.5
+var _has_last_tap: bool = false
+var _last_tap_msec: int = 0
+var _last_tap_pos := Vector2.ZERO
+
 @onready var road = $Road
 @onready var player = $Player
 @onready var enemy_holder: Node2D = $EnemyHolder
@@ -206,6 +215,8 @@ func _swipe_allowed() -> bool:
 
 
 func _handle_swipe_event(event: InputEvent) -> void:
+	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
+		_check_double_tap(event as InputEventScreenTouch)
 	if not _swipe_allowed():
 		return
 	if event is InputEventScreenTouch:
@@ -224,6 +235,18 @@ func _handle_swipe_event(event: InputEvent) -> void:
 			_swipe_steer = clampf(d.relative.x / SWIPE_FULL_DRAG, -1.0, 1.0)
 			_swipe_idle = 0.0
 			_update_touch_steer()
+
+
+func _check_double_tap(t: InputEventScreenTouch) -> void:
+	var now := int(Time.get_ticks_msec())
+	if _has_last_tap and now - _last_tap_msec <= DOUBLE_TAP_MSEC and t.position.distance_to(_last_tap_pos) <= DOUBLE_TAP_DIST:
+		if player != null and game_active and not get_tree().paused:
+			player.trigger_nitro_burst(NITRO_BURST_TIME)
+		_has_last_tap = false
+	else:
+		_has_last_tap = true
+	_last_tap_msec = now
+	_last_tap_pos = t.position
 
 
 # --- spawning ---
@@ -472,15 +495,21 @@ func _hide_help() -> void:
 	help_panel.hide()
 
 
-## On phones the help panel shows the touch controls instead of keys.
+## On phones the help panel explains the chosen touch mode so
+## players know how to steer and boost before the race starts.
 func _apply_touch_help_text() -> void:
 	if not _is_touch_device():
 		return
+	var steer_hint := "◀ ▶ or drag: steer"
+	if _control_mode == "buttons":
+		steer_hint = "◀ ▶ buttons: steer"
+	elif _control_mode == "swipe":
+		steer_hint = "Drag left/right: steer"
 	var box_path := "HUD/HelpPanel/Margin/Box"
 	var texts := {
-		"C1": "◀ ▶ buttons or drag: steer",
-		"C2": "NITRO button: boost",
-		"C5": "Change in Settings: buttons / swipe",
+		"C1": steer_hint,
+		"C2": "NITRO button or double-tap: boost",
+		"C5": "Mode: %s (change in Settings)" % _control_mode.capitalize(),
 	}
 	for node_name in texts.keys():
 		var lab := get_node_or_null(box_path + "/" + node_name) as Label

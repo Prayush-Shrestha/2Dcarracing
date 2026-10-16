@@ -36,6 +36,8 @@ var _nitro_cool: float = 99.0
 # -1..1, added to keyboard steer. touch_nitro held = boost.
 var touch_steer: float = 0.0
 var touch_nitro: bool = false
+# Double-tap nitro: short timed boost, drains the meter like holding NITRO.
+var nitro_burst_left: float = 0.0
 var _shield_ring: Polygon2D = null
 
 const NITRO_MAX := 100.0
@@ -88,11 +90,19 @@ func _read_steer() -> float:
 
 
 func wants_nitro() -> bool:
-	if touch_nitro:
+	if touch_nitro or nitro_burst_left > 0.0:
 		return true
 	if Input.is_action_pressed("nitro") or Input.is_key_pressed(KEY_SPACE):
 		return true
 	return false
+
+
+## Double-tap boost: keeps nitro burning for `duration` seconds.
+## Uses the same meter, so an empty tank means no boost.
+func trigger_nitro_burst(duration: float = 1.5) -> void:
+	if _dead:
+		return
+	nitro_burst_left = maxf(nitro_burst_left, duration)
 
 
 func apply_car_stats(car: Dictionary) -> void:
@@ -153,6 +163,8 @@ func set_magnet(duration: float) -> void:
 
 func _update_nitro(delta: float) -> void:
 	_nitro_cool += delta
+	if nitro_burst_left > 0.0:
+		nitro_burst_left = maxf(nitro_burst_left - delta, 0.0)
 	var want := wants_nitro() and _nitro > 5.0
 	if want:
 		_nitro = maxf(_nitro - NITRO_DRAIN * delta, 0.0)

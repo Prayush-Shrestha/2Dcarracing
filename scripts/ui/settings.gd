@@ -12,6 +12,7 @@ var _confirming: bool = false
 @onready var sfx_value: Label = $Scroll/Rows/SfxRow/SfxValue
 @onready var mute_check: CheckButton = $Scroll/Rows/MuteCheck
 @onready var control_mode_option: OptionButton = $Scroll/Rows/ControlModeRow/ControlModeOption
+@onready var touch_help: Label = $Scroll/Rows/TouchHelp
 @onready var reset_button: Button = $Scroll/Rows/ResetButton
 @onready var confirm_box: VBoxContainer = $Scroll/Rows/ConfirmBox
 @onready var confirm_yes: Button = $Scroll/Rows/ConfirmBox/ConfirmRow/YesButton
@@ -49,6 +50,7 @@ func _setup_control_mode_option() -> void:
 	for label in CONTROL_LABELS:
 		control_mode_option.add_item(label)
 	control_mode_option.selected = _control_mode_index()
+	_refresh_touch_help()
 
 
 func _control_mode_index() -> int:
@@ -61,7 +63,20 @@ func _on_control_mode(idx: int) -> void:
 		return
 	_save["control_mode"] = CONTROL_MODES[idx]
 	SaveManager.save_data(_save)
+	_refresh_touch_help()
 	_click()
+
+
+## Plain-word how-to for each mode, so players know what the
+## chosen option does before they start a race.
+func _refresh_touch_help() -> void:
+	match str(_save.get("control_mode", "both")):
+		"buttons":
+			touch_help.text = "Buttons: hold ◀ / ▶ to steer, hold NITRO or double-tap the screen to boost."
+		"swipe":
+			touch_help.text = "Swipe: drag left / right anywhere to steer, hold NITRO or double-tap to boost."
+		_:
+			touch_help.text = "Both: use ◀ / ▶ buttons or drag to steer, hold NITRO or double-tap to boost."
 
 
 func _refresh_labels() -> void:
@@ -113,7 +128,8 @@ func _on_reset_confirmed() -> void:
 	music_slider.set_value_no_signal(float(_save.get("music_volume", 0.8)) * 100.0)
 	sfx_slider.set_value_no_signal(float(_save.get("sfx_volume", 0.9)) * 100.0)
 	mute_check.set_pressed_no_signal(bool(_save.get("muted", false)))
-	control_mode_option.select(_control_mode_index())
+	control_mode_option.selected = _control_mode_index()
+	_refresh_touch_help()
 	_apply_audio()
 	_refresh_labels()
 	confirm_box.hide()
